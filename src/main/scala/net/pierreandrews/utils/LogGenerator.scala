@@ -65,7 +65,7 @@ object LogGenerator extends ArgMain[LogGenArgs] {
         //open N files and write to them
         (0 until args.numFiles).foreach {
           fileID =>
-            val file = new PrintWriter(new File(dir, s"log$fileID.log"))
+            val file = new PrintWriter(new File(dir, s"log.$fileID.log"))
             try {
               //generate M lines per file
               (0 until args.linePerFile).foreach { l =>
