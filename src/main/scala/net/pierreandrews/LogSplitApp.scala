@@ -1,6 +1,6 @@
 package net.pierreandrews
 
-import java.io.File
+import java.io.{FilenameFilter, File}
 
 import akka.actor.{Props, ActorSystem}
 import com.quantifind.sumac.validation.Required
@@ -20,11 +20,26 @@ object LogSplitApp extends ArgMain[LogSplitAppArgs] {
 
     val system = ActorSystem(s"ClusterSystem", config)
     //TODO create one reader per part? user inner actor?
-    val reader = system.actorOf(Props(new ReaderActor(args)), name = "reader")
+    startReaders(args, system)
     val sorter = system.actorOf(Props(new SorterActor(args)), name = "sorter")
     //TODO one writer per part? use inner actor to writer?
-    val writer = system.actorOf(Props(new WriterActor(args, sorter)), name = "writer")
+    system.actorOf(Props(new WriterActor(args, sorter)), name = "writer")
 
+  }
+
+  def startReaders(args: LogSplitAppArgs, system: ActorSystem): Unit = {
+    //listFiles might return null, wrap in Option
+    val files: Seq[File] = Option(args.input.listFiles(new FilenameFilter {
+      override def accept(dir: File, name: String): Boolean = return name.endsWith(".log")
+    })).map(_.toSeq).getOrElse(Seq())
+
+    //for each input split, start a reader that will read the files in
+    // parallel
+    files.zipWithIndex.foreach {
+      case (file, partIdx) =>
+        system.actorOf(Props(new ReaderActor(args, file, partIdx)), name = s"reader-$partIdx")
+
+    }
   }
 }
 
@@ -39,7 +54,8 @@ class LogSplitAppArgs extends FieldArgs {
   var output: File = _
 
   var maxReadBuffer: Int = 1000
-  var maxWriteOpen: Int = 10
+  var maxWriteOpen: Int = 5
+  var numWriteWorkers: Int = 10
 
   var numServers: Int = 3
 }

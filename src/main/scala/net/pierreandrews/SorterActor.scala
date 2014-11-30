@@ -1,6 +1,7 @@
 package net.pierreandrews
 
 import akka.actor.Actor
+import akka.event.LoggingReceive
 import net.pierreandrews.Protocol.StartSorting
 
 /**
@@ -9,7 +10,8 @@ import net.pierreandrews.Protocol.StartSorting
  * Date: 11/28/14
  */
 class SorterActor(args: LogSplitAppArgs) extends Actor {
-  override def receive: Receive = {
-    case StartSorting => ??? //TODO
+  override def receive: Receive = LoggingReceive {
+    case StartSorting =>  //TODO
+    println("START SORTING")
   }
 }

@@ -19,9 +19,10 @@ class FileCache(args: LogSplitAppArgs) {
   // this is because each reader has log lines sorted, but we don't know
   // how the partial order is organized between servers. We can only guarantee the order for the same reader
   // once we have all the log lines, we can start a merging step that will merge all the partially ordered files
-  def write(log: LogLine, readerId: Int): Unit = {
-    val writer = Option(lruCache.get(log.userid)).getOrElse {
-      val file = new File(args.output, s"${log.userid}.${readerId}")
+  def write(log: LogLine, readerId: Int, partId: Int): Unit = {
+    val filename = s"${log.userid}.$readerId.$partId"
+    val writer = Option(lruCache.get(filename)).getOrElse {
+      val file = new File(args.output, filename)
       val newWriter = new PrintWriter(new FileWriter(file, true)) //true to append to a possibly existing file
       lruCache.put(log.userid, newWriter)
       newWriter
