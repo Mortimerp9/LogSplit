@@ -137,7 +137,7 @@ class LogSplitAppArgs extends FieldArgs {
   // each part file is sorted but all the parts are not globally sorted. Once we are done collecting logs,
   // we have to sort the lines again. How many parallel sorters should we use.
   @Positive
-  var numSortWorkers: Int = 50
+  var numSortWorkers: Int = 60
 
   //Should we delete the partially sorted part files when we are done.
   var deletePartFiles: Boolean = true
