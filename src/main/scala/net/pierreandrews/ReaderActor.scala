@@ -106,7 +106,7 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) ex
     case MemberUp(m) =>
       // a new node joins, go register on it
       register(m)
-    case MemberRemoved(m) =>
+    case MemberRemoved(_, _) =>
       //something bad is happening, give up everything
       shutdown()
 
@@ -135,7 +135,7 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) ex
       if (state.members.exists(_.status == MemberStatus.Removed)) {
         shutdown()
       }
-    case MemberRemoved(m) =>
+    case MemberRemoved(_, _) =>
       //something bad is happening, give up everything
       shutdown()
 
@@ -210,7 +210,7 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) ex
             }
           case None =>
             //invalid line, cannot be parsed, drop it
-            log.error("{} couldn't be parsed", logLine)
+            log.debug("{} couldn't be parsed", logLine)
             // move the iterator forward
             lines.next()
             // try to fill with the next line

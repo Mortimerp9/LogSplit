@@ -26,7 +26,7 @@ object LogSplitApp extends ArgMain[LogSplitAppArgs] {
   override def main(args: LogSplitAppArgs): Unit = {
 
     //setup the actorsystem and cluster connection
-    val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=${args.port.getOrElse(0)}")
+    val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=${args.port}")
     //if we have a set of seeds on the command line
     val configWithSeeds = args.seeds.map { seedSeq =>
       val seedStr = seedSeq.map(ip => s"""akka.tcp://ClusterSystem@$ip""").mkString(",")
@@ -92,14 +92,13 @@ class LogSplitAppArgs extends FieldArgs {
   // The id of the server, this is required
   // the ID has to be positive and is used to assign users to
   // this server (partition)
-  @Required @Positive
+  @Required
   var serverID: Int = -1
 
   // What port are we running in.
   // It is important that this corresponds to the settings in application.conf
   //  or provided by --seeds
-  @Positive
-  var port: Option[Int] = None
+  var port: Int = 0
   // Where are we reading the logs from
   @Required
   var input: File = _
@@ -125,7 +124,7 @@ class LogSplitAppArgs extends FieldArgs {
 
   //How many reader workers do we want on this server?
   @Positive
-  var numReaderWorkers: Int = 5
+  var numReaderWorkers: Int = 10
   // We buffer log lines in memory,
   // this is useful to unblock reads when a particular partition is slower than another one
   // a higher value should increase the throughput but will require more memory.
@@ -147,5 +146,10 @@ class LogSplitAppArgs extends FieldArgs {
   // e.g. --seeds 192.168.0.1:2550,192.168.0.2:2551,192.168.0.30:2552
   // at least one seed should be setup, the other nodes should be able to auto-discover each other from this.
   var seeds: Option[Seq[String]] = None
+
+  addValidation {
+    require(port >= 0, "port cannot be negative")
+    require(serverID >= 0, "serverID cannot be negative")
+  }
 
 }

@@ -40,7 +40,9 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
   var readerCnt = 0
 
   //keep track of the registered readers
-  var readers: mutable.ListBuffer[ActorRef] = mutable.ListBuffer()
+  val readers: mutable.ListBuffer[ActorRef] = mutable.ListBuffer()
+  // keep track of readers that are replying (avoid flooding readers that are not responding)
+  val activeReaders: mutable.Map[(Int, Int), ActorRef] = mutable.Map()
 
   override def receive: Receive = {
 
@@ -55,7 +57,7 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
         log.info("Writer {}.{} is becoming active", args.serverID, writerId)
         context.become(activeWriter)
         //  and start pulling work from the reader
-        readers.foreach(_ ! RequestLog(args.serverID))
+        requestLogs()
       }
 
     case RegisterReader(readerServer, readerPart, _) =>
@@ -65,12 +67,25 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
 
   }
 
+  // request more work from the readers
+  def requestLogs(): Unit = {
+    activeReaders.foreach {
+      case (k, v) =>
+        //once we have requested work from a reader
+        // we shouldn't request more work until it answers
+        activeReaders.remove(k)
+        v ! RequestLog(args.serverID)
+    }
+  }
+
   def activeWriter: Receive = {
     // the worker is active, it can either:
     // - receive a log from a reader to write down locally
     case WriteLog(readerServer, log, partIdx) =>
       fileCache.write(log, readerServer, partIdx)
-      readers.foreach(_ ! RequestLog(serverId = args.serverID))
+      // the reader replied, add it back to the list of active readers
+      activeReaders.put((readerServer, partIdx), sender())
+      requestLogs()
 
     // - receive a notification from a reader that work is available for this writer
     case LogAvailable =>
@@ -82,7 +97,7 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
     // one of this message and should make sure to shutdown only when all the readers are done.
     case LogDone(readerServer, partIdx) =>
       //remove the actor reference so we stop asking it for work
-      readers -= sender()
+      activeReaders -= ((readerServer, partIdx))
       log.info("log done for {}.{}", readerServer, partIdx)
       readerCnt -= 1
       //do not stop the writer until ALL partitions are done
@@ -97,6 +112,7 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
   // register an actor on this writer
   def register(reader: ActorRef, readerServer: Int, readerPart: Int): Unit = {
     log.info("Reader {}.{} registering on {}.{}", readerServer, readerPart, args.serverID, writerId)
+    activeReaders.put((readerServer, readerPart), sender())
     readers.prepend(sender())
     readerCnt += 1
     //register the writer on the reader.

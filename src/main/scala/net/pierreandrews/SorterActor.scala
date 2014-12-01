@@ -104,7 +104,7 @@ object SorterActor {
     override def receive: Actor.Receive = {
       //receive workload
       case SortUser(userid, files) =>
-        log.info("sorting for {}", userid)
+        log.debug("sorting for {}", userid)
         //part files are already ordered for each server, just append them in order of partID
         val serverParts = files.groupBy(_.serverId).values.toSeq.map {
           parts => parts.sortBy(_.partId).toIterator.flatMap(f => Source.fromFile(f.file).getLines)
@@ -116,7 +116,6 @@ object SorterActor {
 
         //all the sorting work is done by the iterator, we just need to print them out
         val writer = new PrintWriter(new File(args.output, userid))
-        var
         try {
           inputIterator.foreach(writer.println)
           //maybe delete the part files (do not delete if there was an exception)
@@ -126,7 +125,7 @@ object SorterActor {
                 f.file.delete()
             }
           }
-          log.info("done sorting for {}", userid)
+          log.debug("done sorting for {}", userid)
         } catch {
           case NonFatal(e) =>
             //something wrong happened, just give up on that user and try another one
@@ -134,7 +133,7 @@ object SorterActor {
         } finally {
           //close the writer
           writer.close()
-          // get more work now that we are done.
+          // ask the parent sorter for work
           context.parent ! GiveMeWork
         }
     }
