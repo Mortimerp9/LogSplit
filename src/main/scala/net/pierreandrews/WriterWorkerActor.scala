@@ -24,7 +24,6 @@ import net.pierreandrews.utils.FileCache
  *
  * While a writer actor can deal with multiple readers from multiple nodes, we know that:
  *  - each reader is only assigned one single writer from each node
- *  - each reader assigned to a worker will not be assigned to another reader
  * This means that no one else will try to write concurrently to the local files assigned to this worker.
  *
  * User: pierre
