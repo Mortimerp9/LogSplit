@@ -77,13 +77,22 @@ Requirements
 
 This is an sbt/scala project, so you will need java, scala and sbt installed.
 
+Building
+------
+
+you can build a package jar with
+
+`sbt clean assembly`
+
+you can also run the following commands directly with `sbt 'run-main ...'` without running the assembly.
+
 
 Generating a Sample
 -------
 
 You can generate a sample of log files with the utils.LogGenerator.
 
-`> sbt 'run-main net.pierreandrews.utils.LogGenerator --output /tmp/chaordic/servers --linePerFile 10000 --numUsers 1000 --numFiles 50'`
+`> java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.utils.LogGenerator --output /tmp/chaordic/servers --linePerFile 10000 --numUsers 1000 --numFiles 50`
 
 This will generate three folders in /tmp/chaordic/servers with 50 files each containing 10000 lines. The userids will be selected from a random pool of 1000 users.
 
@@ -94,15 +103,15 @@ Running the Code
 
 The app is currently configured to run with three separate JVMs on the same machine (localhost) on the ports 2550, 2551 and 2552. You can start the three JVMs with:
 
-`> sbt 'run-main net.pierreandrews.LogSplitApp --port 2550 --output /tmp/chaordic/outputs/server0 --input /tmp/chaordic/servers/server0 --serverID 0'`
+`>  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar  net.pierreandrews.LogSplitApp --port 2550 --output /tmp/chaordic/outputs/server0 --input /tmp/chaordic/servers/server0 --serverID 0`
 
-`> sbt 'run-main net.pierreandrews.LogSplitApp --port 2551 --output /tmp/chaordic/outputs/server1 --input /tmp/chaordic/servers/server1 --serverID 1'`
+`>  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar  net.pierreandrews.LogSplitApp --port 2551 --output /tmp/chaordic/outputs/server1 --input /tmp/chaordic/servers/server1 --serverID 1`
 
-`> sbt 'run-main net.pierreandrews.LogSplitApp --port 2552 --output /tmp/chaordic/outputs/server2 --input /tmp/chaordic/servers/server2 --serverID 2'`
+`>  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.LogSplitApp --port 2552 --output /tmp/chaordic/outputs/server2 --input /tmp/chaordic/servers/server2 --serverID 2`
 
 If you are going to run each JVM on separate machines, you need to change the seeds, either with the `--seeds` arguments, e.g. for one server:
 
-`> sbt 'run-main net.pierreandrews.LogSplitApp --port 2550 --output /tmp/chaordic/outputs/server0 --input /tmp/chaordic/servers/server0 --serverID 0 --seeds 192.168.1.21:2550,192.168.1.23:2551,192.168.1.1:2550'`
+`>  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.LogSplitApp --port 2550 --output /tmp/chaordic/outputs/server0 --input /tmp/chaordic/servers/server0 --serverID 0 --seeds 192.168.1.21:2550,192.168.1.23:2551,192.168.1.1:2550`
 
 or by updating the `application.conf` settings. Given the limited time and resources I had, I couldn't test this extensively on distributed servers but it should work transparently.
 
