@@ -117,14 +117,14 @@ class LogSplitAppArgs extends FieldArgs {
 
   // How many writer workers do we want on this server
   @Positive
-  var numWriteWorkers: Int = 50
+  var numWriteWorkers: Int = 60
   // how many file handles should EACH writer worker keep cached. See the WriterWorkerActor for more details
   @Positive
   var maxWriteOpen: Int = 20
 
   //How many reader workers do we want on this server?
   @Positive
-  var numReaderWorkers: Int = 50
+  var numReaderWorkers: Int = 60
   // We buffer log lines in memory,
   // this is useful to unblock reads when a particular partition is slower than another one
   // a higher value should increase the throughput but will require more memory.

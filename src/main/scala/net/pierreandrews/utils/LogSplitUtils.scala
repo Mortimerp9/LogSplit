@@ -50,6 +50,7 @@ object LogSplitUtils {
             currentIterator = fileHandle.map(_.getLines)
             nextRec()
           case Some(it) if !it.hasNext && !files.hasNext =>
+            fileHandle.foreach(_.close())
             null
           case _ => null
 

@@ -80,36 +80,21 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int, to
     log.info("starting reader {}.{} on files {}", args.serverID, partIdx, inputFiles.map(_.getAbsolutePath).mkString(","))
     // subscribe to cluster changes
     cluster.subscribe(self, classOf[MemberUp])
-    cluster.subscribe(self, classOf[MemberRemoved])
     // fill up the queues in preparation for writers pulling work
     fillUpQueue()
   }
   // re-subscribe when restart
   override def postStop(): Unit = cluster.unsubscribe(self)
 
-  private def shutdown(): Unit = {
-    //we are in trouble, abort everything
-    // This is a naive approach and all the work will have to be started again.
-    log.error("someone in the cluster died, good bye!")
-    context.system.shutdown()
-  }
-
   // start in a cluster management mode. When all nodes are setup, move to an active mode where we
   // can send logs to writers
   override def receive: Receive = {
     ///////////////// cluster management
     case state: CurrentClusterState =>
-      //if something wrong goes on with one of the node, we just give up.
-      if (state.members.exists(_.status == MemberStatus.Removed)) {
-        shutdown()
-      }
       state.members.filter(_.status == MemberStatus.Up) foreach register
     case MemberUp(m) =>
       // a new node joins, go register on it
       register(m)
-    case MemberRemoved(_, _) =>
-      //something bad is happening, give up everything
-      shutdown()
 
     //connect to writers that we are assigned to
     case RegisterWriter(id) =>
@@ -130,15 +115,6 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int, to
 
   //active working mode, deal with log requests from writers
   def activeReader: Receive = {
-    ///////////////// cluster management
-    case state: CurrentClusterState =>
-      //if something wrong goes on with one of the node, we just give up.
-      if (state.members.exists(_.status == MemberStatus.Removed)) {
-        shutdown()
-      }
-    case MemberRemoved(_, _) =>
-      //something bad is happening, give up everything
-      shutdown()
 
     ////////////////// log distribution logic
     case RequestLog(requestServerId) if requestServerId < args.numServers =>
@@ -173,7 +149,8 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int, to
   def lineIterator(): BufferedIterator[IdAndLine] = {
     //use an iterator to lazily load the lines
     // make it buffered so we can peak at the head of the iterator
-    new JoinIterators(inputFiles).map(IdAndLine).buffered
+    //new JoinIterators(inputFiles).map(IdAndLine).buffered
+    inputFiles.toIterator.flatMap(f=> Source.fromFile(f).getLines.map(IdAndLine)).buffered
   }
 
   // when we are done filling the queues, notify the writers that might be blocked and for which a line is available
