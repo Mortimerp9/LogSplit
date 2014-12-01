@@ -1,12 +1,11 @@
 package net.pierreandrews
 
-import java.util.Date
-
 import org.joda.time.DateTime
 import org.scalatest._
 
 /**
- * TODO DOC
+ * Basic test for the parser, uses the examples from the instructions
+ *
  * User: pierre
  * Date: 11/28/14
  */

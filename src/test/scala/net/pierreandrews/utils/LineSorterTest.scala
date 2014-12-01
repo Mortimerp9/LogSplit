@@ -1,14 +1,12 @@
 package net.pierreandrews.utils
 
-import java.util.Date
-
-import org.joda.time.DateTime
-import org.scalatest.{ Matchers, FunSuite }
-
 import scala.util.Random
 
+import org.joda.time.DateTime
+import org.scalatest.{FunSuite, Matchers}
+
 /**
- * TODO DOC
+ * Test the line sorter iterator
  * User: pierre
  * Date: 11/30/14
  */
