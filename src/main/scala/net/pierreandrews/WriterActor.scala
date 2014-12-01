@@ -60,7 +60,7 @@ class WriterActor(args: LogSplitAppArgs, sorter: ActorRef) extends Actor {
 
       //when all the servers are done initializing (we got a register message from all workers), we can
       // start pulling from them
-      if (awaitReaders.forall(_ == 0)) {
+      if (awaitReaders.forall(_ <= 0)) {
         //let the workers know
         workers.foreach(_ ! StartReading)
       }

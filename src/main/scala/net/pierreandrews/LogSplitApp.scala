@@ -72,11 +72,12 @@ object LogSplitApp extends ArgMain[LogSplitAppArgs] {
 
     // distribute the input files between each workers
     // zipWithIndex assignes them an id
-    LogSplitUtils.cut(files, args.numReaderWorkers).zipWithIndex.foreach {
+    val readerSplit = LogSplitUtils.cut(files, args.numReaderWorkers).toSeq
+    readerSplit.zipWithIndex.foreach {
       case (files, partIdx) =>
         // for each input split, start a reader that will read the files in
         // parallel
-        system.actorOf(Props(new ReaderActor(args, files, partIdx)), name = s"reader-$partIdx")
+        system.actorOf(Props(new ReaderActor(args, files, partIdx, readerSplit.size)), name = s"reader-$partIdx")
     }
   }
 }
@@ -116,28 +117,27 @@ class LogSplitAppArgs extends FieldArgs {
 
   // How many writer workers do we want on this server
   @Positive
-  var numWriteWorkers: Int = 5
+  var numWriteWorkers: Int = 50
   // how many file handles should EACH writer worker keep cached. See the WriterWorkerActor for more details
   @Positive
-  var maxWriteOpen: Int = 5
-
+  var maxWriteOpen: Int = 20
 
   //How many reader workers do we want on this server?
   @Positive
-  var numReaderWorkers: Int = 10
+  var numReaderWorkers: Int = 50
   // We buffer log lines in memory,
   // this is useful to unblock reads when a particular partition is slower than another one
   // a higher value should increase the throughput but will require more memory.
   // Each reader will load that amount of lines for each partition in memory, so the actual lines
   // in memory will be potentially = numReaderWorkers*numServers*maxReadBuffer
   @Positive
-  var maxReadBuffer: Int = 1000
+  var maxReadBuffer: Int = 10000
 
   //Once the log distribution is done, we are left with a number of part files coming from each server
   // each part file is sorted but all the parts are not globally sorted. Once we are done collecting logs,
   // we have to sort the lines again. How many parallel sorters should we use.
   @Positive
-  var numSortWorkers: Int = 5
+  var numSortWorkers: Int = 50
 
   //Should we delete the partially sorted part files when we are done.
   var deletePartFiles: Boolean = true

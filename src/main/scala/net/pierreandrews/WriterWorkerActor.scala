@@ -44,6 +44,10 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
   // keep track of readers that are replying (avoid flooding readers that are not responding)
   val activeReaders: mutable.Map[(Int, Int), ActorRef] = mutable.Map()
 
+  override def postStop(): Unit = {
+    fileCache.close()
+  }
+
   override def receive: Receive = {
 
     // All the cluster is up and readers have all been assigned to writers,
@@ -103,7 +107,6 @@ class WriterWorkerActor(args: LogSplitAppArgs, writerId: Int) extends Actor with
       //do not stop the writer until ALL partitions are done
       if (readerCnt == 0) {
         log.info("no more readers, closing writer {}.{}", args.serverID, writerId)
-        fileCache.close()
         context.stop(self)
       }
 

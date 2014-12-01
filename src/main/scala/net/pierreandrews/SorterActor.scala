@@ -7,8 +7,10 @@ import akka.event.LoggingReceive
 import net.pierreandrews.Protocol.{ FileNameData, SortUser, GiveMeWork, StartSorting }
 import net.pierreandrews.SorterActor.SorterWorkerActor
 import net.pierreandrews.utils.LineSorter
+import net.pierreandrews.utils.LogSplitUtils.JoinIterators
 import org.joda.time.{ DateTimeComparator, DateTime }
 
+import scala.annotation.tailrec
 import scala.io.Source
 import scala.util.control.NonFatal
 
@@ -45,7 +47,7 @@ class SorterActor(args: LogSplitAppArgs) extends Actor with ActorLogging {
         .getOrElse(Seq())
         .flatMap { file =>
           file.getName match {
-              //only keep the ones that match our pattern and extract dome data at the same time.
+            //only keep the ones that match our pattern and extract dome data at the same time.
             case ValidPartFile(userid, serverId, partId) => Some(FileNameData(userid, serverId.toInt, partId.toInt, file))
             case _ => None
           }
@@ -106,8 +108,8 @@ object SorterActor {
       case SortUser(userid, files) =>
         log.debug("sorting for {}", userid)
         //part files are already ordered for each server, just append them in order of partID
-        val serverParts = files.groupBy(_.serverId).values.toSeq.map {
-          parts => parts.sortBy(_.partId).toIterator.flatMap(f => Source.fromFile(f.file).getLines)
+        val serverParts: Seq[Iterator[String]] = files.groupBy(_.serverId).values.toSeq.map {
+          parts => new JoinIterators(parts.sortBy(_.partId).map(_.file))
         }
 
         //server inputs are sorted, but not relative to other server parts

@@ -3,6 +3,7 @@ package net.pierreandrews
 import java.io.{ File, FilenameFilter }
 
 import akka.event.LoggingReceive
+import net.pierreandrews.utils.LogSplitUtils.JoinIterators
 
 import scala.annotation.tailrec
 import scala.collection.mutable
@@ -46,7 +47,7 @@ import scala.util.control.NonFatal
  * User: pierre
  * Date: 11/28/14
  */
-class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) extends Actor with ActorLogging {
+class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int, totalReaders: Int) extends Actor with ActorLogging {
 
   // the akka cluster to communicate wiht
   val cluster = Cluster(context.system)
@@ -172,7 +173,7 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) ex
   def lineIterator(): BufferedIterator[IdAndLine] = {
     //use an iterator to lazily load the lines
     // make it buffered so we can peak at the head of the iterator
-    inputFiles.toIterator.flatMap(f => Source.fromFile(f).getLines().map(IdAndLine)).buffered
+    new JoinIterators(inputFiles).map(IdAndLine).buffered
   }
 
   // when we are done filling the queues, notify the writers that might be blocked and for which a line is available
@@ -228,7 +229,7 @@ class ReaderActor(args: LogSplitAppArgs, inputFiles: Seq[File], partIdx: Int) ex
   // go the writer on each node to register this reader for work pulling
   def register(member: Member): Unit = {
     if (member.hasRole("logsplit")) {
-      context.actorSelection(RootActorPath(member.address) / "user" / "writer") ! RegisterReader(args.serverID, partIdx, args.numReaderWorkers)
+      context.actorSelection(RootActorPath(member.address) / "user" / "writer") ! RegisterReader(args.serverID, partIdx, totalReaders)
     }
   }
 
