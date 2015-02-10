@@ -9,6 +9,8 @@ a "real world" example that wasn't too big either. That's when I
 stumbled over this _technical assignment_ and I thought it would be
 a fun week end project.
 
+Checkout the [annotated code](http://pierreandrews.net/LogSplit).
+
 *While the code works, I am still working on the literal description
 of what's going on.*
 
