@@ -1,10 +1,12 @@
 {
     "glob": [
         "src/**/*.scala",
-        "*.md"
+        "src/**/*.java",
+        "*.md",
+        "*.txt"
     ],
     "index": "README.md",
-    "github": false,
+    "github": true,
     "whitespace-after-token": false,
     "style": "thin"
 }
