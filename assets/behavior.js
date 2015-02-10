@@ -17,201 +17,9 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "projectPath": "README.md",
         "targetPath": "index",
         "pageTitle": "index",
-        "firstHeader": {
-          "type": "heading",
-          "data": {
-            "level": 1,
-            "title": "LogSplit with Akka Cluster",
-            "slug": "logsplit-with-akka-cluster",
-            "isFileHeader": true
-          },
-          "depth": 1,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Problem Statement",
-                "slug": "problem-statement"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Possible Solution",
-                "slug": "possible-solution"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Design and Data Flow",
-                "slug": "design-and-data-flow"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Data Distribution",
-                "slug": "data-distribution"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Sorting",
-                "slug": "sorting"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Requirements",
-                "slug": "requirements"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Building",
-                "slug": "building"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Generating a Sample",
-                "slug": "generating-a-sample"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Running the Code",
-                "slug": "running-the-code"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Tweaking/Tuning",
-                "slug": "tweakingtuning"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "Assumption and alternative solution",
-                "slug": "assumption-and-alternative-solution"
-              },
-              "depth": 2
-            }
-          ]
-        },
-        "title": "LogSplit with Akka Cluster"
+        "title": "index"
       },
-      "depth": 1,
-      "outline": [
-        {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Problem Statement",
-            "slug": "problem-statement"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Possible Solution",
-            "slug": "possible-solution"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Design and Data Flow",
-            "slug": "design-and-data-flow"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Data Distribution",
-            "slug": "data-distribution"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Sorting",
-            "slug": "sorting"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Requirements",
-            "slug": "requirements"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Building",
-            "slug": "building"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Generating a Sample",
-            "slug": "generating-a-sample"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Running the Code",
-            "slug": "running-the-code"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Tweaking/Tuning",
-            "slug": "tweakingtuning"
-          },
-          "depth": 2
-        }, {
-          "type": "heading",
-          "data": {
-            "level": 2,
-            "title": "Assumption and alternative solution",
-            "slug": "assumption-and-alternative-solution"
-          },
-          "depth": 2
-        }
-      ]
+      "depth": 1
     }, {
       "type": "file",
       "data": {
@@ -226,13 +34,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "LICENSE",
         "title": "LICENSE"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -245,58 +53,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "LogSplitApp",
         "title": "LogSplitApp"
       },
-      "depth": 1,
-      "outline": [
-        {
-          "type": "heading",
-          "data": {
-            "level": 1,
-            "title": "The Main Application",
-            "slug": "the-main-application"
-          },
-          "depth": 1,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "setup the actorsystem and cluster connection",
-                "slug": "setup-the-actorsystem-and-cluster-connection"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "start the system",
-                "slug": "start-the-system"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "start some actors",
-                "slug": "start-some-actors"
-              },
-              "depth": 2
-            }, {
-              "type": "heading",
-              "data": {
-                "level": 2,
-                "title": "setup the reader workers",
-                "slug": "setup-the-reader-workers"
-              },
-              "depth": 2
-            }
-          ]
-        }
-      ]
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -309,13 +72,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "Parser",
         "title": "Parser"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -328,13 +91,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "Protocol",
         "title": "Protocol"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -347,13 +110,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "ReaderActor",
         "title": "ReaderActor"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -366,13 +129,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "SorterActor",
         "title": "SorterActor"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -385,13 +148,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "WriterActor",
         "title": "WriterActor"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "file",
       "data": {
         "language": {
           "nameMatchers": [".scala"],
+          "pygmentsLexer": "scala",
           "multiLineComment": ["/*", "*", "*/"],
           "singleLineComment": ["//"],
           "ignorePrefix": "}",
@@ -404,8 +167,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "pageTitle": "WriterWorkerActor",
         "title": "WriterWorkerActor"
       },
-      "depth": 1,
-      "outline": []
+      "depth": 1
     }, {
       "type": "folder",
       "data": {
@@ -472,14 +234,39 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                                 "pageTitle": "src/main/java/net/pierreandrews/utils/LRUOfFiles",
                                 "title": "LRUOfFiles"
                               },
-                              "depth": 7,
-                              "outline": []
+                              "depth": 7
                             }
                           ]
                         }
                       ]
                     }
                   ]
+                }
+              ]
+            }, {
+              "type": "folder",
+              "data": {
+                "path": "src/main/resources",
+                "title": "resources"
+              },
+              "depth": 3,
+              "children": [
+                {
+                  "type": "file",
+                  "data": {
+                    "language": {
+                      "nameMatchers": [".conf"],
+                      "singleLineComment": ["//", "#"],
+                      "pygmentsLexer": "json",
+                      "name": "HOCON"
+                    },
+                    "sourcePath": "/Users/pierre/dev/logsplit/src/main/resources/application.conf",
+                    "projectPath": "src/main/resources/application.conf",
+                    "targetPath": "src/main/resources/application",
+                    "pageTitle": "src/main/resources/application",
+                    "title": "application"
+                  },
+                  "depth": 4
                 }
               ]
             }
@@ -521,6 +308,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                           "data": {
                             "language": {
                               "nameMatchers": [".scala"],
+                              "pygmentsLexer": "scala",
                               "multiLineComment": ["/*", "*", "*/"],
                               "singleLineComment": ["//"],
                               "ignorePrefix": "}",
@@ -533,8 +321,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                             "pageTitle": "src/test/scala/net/pierreandrews/ParserTest",
                             "title": "ParserTest"
                           },
-                          "depth": 6,
-                          "outline": []
+                          "depth": 6
                         }, {
                           "type": "folder",
                           "data": {
@@ -548,6 +335,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                               "data": {
                                 "language": {
                                   "nameMatchers": [".scala"],
+                                  "pygmentsLexer": "scala",
                                   "multiLineComment": ["/*", "*", "*/"],
                                   "singleLineComment": ["//"],
                                   "ignorePrefix": "}",
@@ -560,8 +348,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                                 "pageTitle": "src/test/scala/net/pierreandrews/utils/LineSorterTest",
                                 "title": "LineSorterTest"
                               },
-                              "depth": 7,
-                              "outline": []
+                              "depth": 7
                             }
                           ]
                         }
@@ -587,6 +374,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "data": {
             "language": {
               "nameMatchers": [".scala"],
+              "pygmentsLexer": "scala",
               "multiLineComment": ["/*", "*", "*/"],
               "singleLineComment": ["//"],
               "ignorePrefix": "}",
@@ -599,13 +387,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "pageTitle": "utils/FileCache",
             "title": "FileCache"
           },
-          "depth": 2,
-          "outline": []
+          "depth": 2
         }, {
           "type": "file",
           "data": {
             "language": {
               "nameMatchers": [".scala"],
+              "pygmentsLexer": "scala",
               "multiLineComment": ["/*", "*", "*/"],
               "singleLineComment": ["//"],
               "ignorePrefix": "}",
@@ -618,13 +406,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "pageTitle": "utils/LineSorter",
             "title": "LineSorter"
           },
-          "depth": 2,
-          "outline": []
+          "depth": 2
         }, {
           "type": "file",
           "data": {
             "language": {
               "nameMatchers": [".scala"],
+              "pygmentsLexer": "scala",
               "multiLineComment": ["/*", "*", "*/"],
               "singleLineComment": ["//"],
               "ignorePrefix": "}",
@@ -637,13 +425,13 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "pageTitle": "utils/LogGenerator",
             "title": "LogGenerator"
           },
-          "depth": 2,
-          "outline": []
+          "depth": 2
         }, {
           "type": "file",
           "data": {
             "language": {
               "nameMatchers": [".scala"],
+              "pygmentsLexer": "scala",
               "multiLineComment": ["/*", "*", "*/"],
               "singleLineComment": ["//"],
               "ignorePrefix": "}",
@@ -656,8 +444,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "pageTitle": "utils/LogSplitUtils",
             "title": "LogSplitUtils"
           },
-          "depth": 2,
-          "outline": []
+          "depth": 2
         }
       ]
     }

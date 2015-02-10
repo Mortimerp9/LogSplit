@@ -1,58 +1,58 @@
-<!DOCTYPE html><html lang="en"><head><title>utils/LogSplitUtils</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="utils/LogSplitUtils"><meta name="groc-project-path" content="src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala"><meta name="groc-github-url" content="https://github.com/Mortimerp9/LogSplit"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/Mortimerp9/LogSplit/blob/master/src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala">src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">package net.pierreandrews.utils
+<!DOCTYPE html><html lang="en"><head><title>utils/LogSplitUtils</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../"><meta name="groc-document-path" content="utils/LogSplitUtils"><meta name="groc-project-path" content="src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala"><meta name="groc-github-url" content="https://github.com/Mortimerp9/LogSplit"><link rel="stylesheet" type="text/css" media="all" href="../assets/style.css"><script type="text/javascript" src="../assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/Mortimerp9/LogSplit/blob/master/src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala">src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="k">package</span> <span class="nn">net.pierreandrews.utils</span>
 
-<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> java.io.File</span>
+<span class="k">import</span> <span class="nn">java.io.File</span>
 
-<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> net.pierreandrews.Protocol.FileNameData</span>
+<span class="k">import</span> <span class="nn">net.pierreandrews.Protocol.FileNameData</span>
 
-<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.annotation.tailrec</span>
-<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.io.Source</span>
+<span class="k">import</span> <span class="nn">scala.annotation.tailrec</span>
+<span class="k">import</span> <span class="nn">scala.io.Source</span>
 
-object LogSplitUtils {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Cut an indexed sequence in sub-sequences of more or less size n. This is
+<span class="k">object</span> <span class="nc">LogSplitUtils</span> <span class="o">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Cut an indexed sequence in sub-sequences of more or less size n. This is
 used to spread files over readers.
-from: <a href="http://stackoverflow.com/a/11456797/618089">http://stackoverflow.com/a/11456797/618089</a></p></div></div><div class="code"><div class="wrapper">  def cut[A](xs: Se<span class="hljs-string">q[A]</span>, n: Int): Iterator[Se<span class="hljs-string">q[A]</span>] = {
-    <span class="hljs-keyword">if</span> (n &gt; xs.size) {
-      xs.toIterator.<span class="hljs-keyword">map</span>(<span class="hljs-string">x =&gt;</span> Se<span class="hljs-string">q(x)</span>)
-    } <span class="hljs-keyword">else</span> {
-      val (quot, rem) = (xs.size / n, xs.size % n)
-      val (smaller, bigger) = xs.splitAt(xs.size - rem * (quot + <span class="hljs-number">1</span>))
-      smaller.grouped(quot) ++ bigger.grouped(quot + <span class="hljs-number">1</span>)
-    }
-  }
+from: <a href="http://stackoverflow.com/a/11456797/618089">http://stackoverflow.com/a/11456797/618089</a></p></div></div><div class="code"><div class="wrapper">  <span class="k">def</span> <span class="n">cut</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">xs</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">A</span><span class="o">],</span> <span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">Seq</span><span class="o">[</span><span class="kt">A</span><span class="o">]]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">xs</span><span class="o">.</span><span class="n">toIterator</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">Seq</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="o">(</span><span class="n">quot</span><span class="o">,</span> <span class="n">rem</span><span class="o">)</span> <span class="k">=</span> <span class="o">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">n</span><span class="o">,</span> <span class="n">xs</span><span class="o">.</span><span class="n">size</span> <span class="o">%</span> <span class="n">n</span><span class="o">)</span>
+      <span class="k">val</span> <span class="o">(</span><span class="n">smaller</span><span class="o">,</span> <span class="n">bigger</span><span class="o">)</span> <span class="k">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">splitAt</span><span class="o">(</span><span class="n">xs</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">rem</span> <span class="o">*</span> <span class="o">(</span><span class="n">quot</span> <span class="o">+</span> <span class="mi">1</span><span class="o">))</span>
+      <span class="n">smaller</span><span class="o">.</span><span class="n">grouped</span><span class="o">(</span><span class="n">quot</span><span class="o">)</span> <span class="o">++</span> <span class="n">bigger</span><span class="o">.</span><span class="n">grouped</span><span class="o">(</span><span class="n">quot</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 
-  class JoinIterators(fileList: Se<span class="hljs-string">q[File]</span>) extends Iterator[String] {
+  <span class="k">class</span> <span class="nc">JoinIterators</span><span class="o">(</span><span class="n">fileList</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">File</span><span class="o">])</span> <span class="k">extends</span> <span class="nc">Iterator</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="o">{</span>
 
-    val files = fileList.toIterator
-    var currentIterator: Option[Iterator[String]] = None
-    var fileHandle: Option[Source] = None
+    <span class="k">val</span> <span class="n">files</span> <span class="k">=</span> <span class="n">fileList</span><span class="o">.</span><span class="n">toIterator</span>
+    <span class="k">var</span> <span class="n">currentIterator</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Iterator</span><span class="o">[</span><span class="kt">String</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">None</span>
+    <span class="k">var</span> <span class="n">fileHandle</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Source</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span>
 
-    override def hasNext: Boolean = currentIterator.forall(<span class="hljs-number">_</span>.hasNext) || files.hasNext
+    <span class="k">override</span> <span class="k">def</span> <span class="n">hasNext</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="n">currentIterator</span><span class="o">.</span><span class="n">forall</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">hasNext</span><span class="o">)</span> <span class="o">||</span> <span class="n">files</span><span class="o">.</span><span class="n">hasNext</span>
 
-    override def <span class="hljs-keyword">next</span>(): String = {
-      <span class="hljs-variable">@tailrec</span>
-      def nextRec(): String = {
-        currentIterator match {
-          case None <span class="hljs-keyword">if</span> files.<span class="hljs-string">hasNext =&gt;</span>
-            fileHandle = Some(Source.fromFile(files.<span class="hljs-keyword">next</span>()))
-            currentIterator = fileHandle.<span class="hljs-keyword">map</span>(<span class="hljs-number">_</span>.getLines)
-            nextRec()
-          case None <span class="hljs-keyword">if</span> !files.<span class="hljs-string">hasNext =&gt;</span>
-            null
-          case Some(it) <span class="hljs-keyword">if</span> it.<span class="hljs-string">hasNext =&gt;</span>
-            it.<span class="hljs-keyword">next</span>()
-          case Some(it) <span class="hljs-keyword">if</span> !it.hasNext &amp;&amp; files.<span class="hljs-string">hasNext =&gt;</span>
-            fileHandle.<span class="hljs-keyword">foreach</span>(<span class="hljs-number">_</span>.<span class="hljs-keyword">close</span>())
-            fileHandle = Some(Source.fromFile(files.<span class="hljs-keyword">next</span>()))
-            currentIterator = fileHandle.<span class="hljs-keyword">map</span>(<span class="hljs-number">_</span>.getLines)
-            nextRec()
-          case Some(it) <span class="hljs-keyword">if</span> !it.hasNext &amp;&amp; !files.<span class="hljs-string">hasNext =&gt;</span>
-            fileHandle.<span class="hljs-keyword">foreach</span>(<span class="hljs-number">_</span>.<span class="hljs-keyword">close</span>())
-            null
-          case <span class="hljs-string">_ =&gt;</span> null
+    <span class="k">override</span> <span class="k">def</span> <span class="n">next</span><span class="o">()</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="nd">@tailrec</span>
+      <span class="k">def</span> <span class="n">nextRec</span><span class="o">()</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="n">currentIterator</span> <span class="k">match</span> <span class="o">{</span>
+          <span class="k">case</span> <span class="nc">None</span> <span class="k">if</span> <span class="n">files</span><span class="o">.</span><span class="n">hasNext</span> <span class="k">=&gt;</span>
+            <span class="n">fileHandle</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Source</span><span class="o">.</span><span class="n">fromFile</span><span class="o">(</span><span class="n">files</span><span class="o">.</span><span class="n">next</span><span class="o">()))</span>
+            <span class="n">currentIterator</span> <span class="k">=</span> <span class="n">fileHandle</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">getLines</span><span class="o">)</span>
+            <span class="n">nextRec</span><span class="o">()</span>
+          <span class="k">case</span> <span class="nc">None</span> <span class="k">if</span> <span class="o">!</span><span class="n">files</span><span class="o">.</span><span class="n">hasNext</span> <span class="k">=&gt;</span>
+            <span class="kc">null</span>
+          <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">it</span><span class="o">)</span> <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">hasNext</span> <span class="k">=&gt;</span>
+            <span class="n">it</span><span class="o">.</span><span class="n">next</span><span class="o">()</span>
+          <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">it</span><span class="o">)</span> <span class="k">if</span> <span class="o">!</span><span class="n">it</span><span class="o">.</span><span class="n">hasNext</span> <span class="o">&amp;&amp;</span> <span class="n">files</span><span class="o">.</span><span class="n">hasNext</span> <span class="k">=&gt;</span>
+            <span class="n">fileHandle</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">close</span><span class="o">())</span>
+            <span class="n">fileHandle</span> <span class="k">=</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">Source</span><span class="o">.</span><span class="n">fromFile</span><span class="o">(</span><span class="n">files</span><span class="o">.</span><span class="n">next</span><span class="o">()))</span>
+            <span class="n">currentIterator</span> <span class="k">=</span> <span class="n">fileHandle</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">getLines</span><span class="o">)</span>
+            <span class="n">nextRec</span><span class="o">()</span>
+          <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">it</span><span class="o">)</span> <span class="k">if</span> <span class="o">!</span><span class="n">it</span><span class="o">.</span><span class="n">hasNext</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">files</span><span class="o">.</span><span class="n">hasNext</span> <span class="k">=&gt;</span>
+            <span class="n">fileHandle</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">close</span><span class="o">())</span>
+            <span class="kc">null</span>
+          <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">null</span>
 
-        }
-      }
-      nextRec()
-    }
-  }
+        <span class="o">}</span>
+      <span class="o">}</span>
+      <span class="n">nextRec</span><span class="o">()</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 
-}</div></div></div></div></body></html>
+<span class="o">}</span></div></div></div></div></body></html>
