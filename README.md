@@ -44,6 +44,9 @@ The idea behind my approach is to use Akka+scala clustering to
 distribute the logs between the servers. The code is extensively
 documented, but please let me know if you have questions.
 
+Once you are done reading this, you might want to start exploring from
+the [main class: `LogSplitApp`](./LogSplitApp.html).
+
 Design and Data Flow
 ------
 
