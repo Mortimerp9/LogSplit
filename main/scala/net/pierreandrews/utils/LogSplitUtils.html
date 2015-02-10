@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="en"><head><title>main/scala/net/pierreandrews/utils/LogSplitUtils</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../../"><meta name="groc-document-path" content="main/scala/net/pierreandrews/utils/LogSplitUtils"><meta name="groc-project-path" content="src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala"><link rel="stylesheet" type="text/css" media="all" href="../../../../../assets/style.css"><script type="text/javascript" src="../../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">package net.pierreandrews.utils
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> java.io.File</span>
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> net.pierreandrews.Protocol.FileNameData</span>
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.annotation.tailrec</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.io.Source</span>
+
+object LogSplitUtils {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Cut an indexed sequence in sub-sequences of more or less size n. This is
+used to spread files over readers.
+from: <a href="http://stackoverflow.com/a/11456797/618089">http://stackoverflow.com/a/11456797/618089</a></p></div></div><div class="code"><div class="wrapper">  def cut[A](xs: Se<span class="hljs-string">q[A]</span>, n: Int): Iterator[Se<span class="hljs-string">q[A]</span>] = {
+    <span class="hljs-keyword">if</span> (n &gt; xs.size) {
+      xs.toIterator.<span class="hljs-keyword">map</span>(<span class="hljs-string">x =&gt;</span> Se<span class="hljs-string">q(x)</span>)
+    } <span class="hljs-keyword">else</span> {
+      val (quot, rem) = (xs.size / n, xs.size % n)
+      val (smaller, bigger) = xs.splitAt(xs.size - rem * (quot + <span class="hljs-number">1</span>))
+      smaller.grouped(quot) ++ bigger.grouped(quot + <span class="hljs-number">1</span>)
+    }
+  }
+
+  class JoinIterators(fileList: Se<span class="hljs-string">q[File]</span>) extends Iterator[String] {
+
+    val files = fileList.toIterator
+    var currentIterator: Option[Iterator[String]] = None
+    var fileHandle: Option[Source] = None
+
+    override def hasNext: Boolean = currentIterator.forall(<span class="hljs-number">_</span>.hasNext) || files.hasNext
+
+    override def <span class="hljs-keyword">next</span>(): String = {
+      <span class="hljs-variable">@tailrec</span>
+      def nextRec(): String = {
+        currentIterator match {
+          case None <span class="hljs-keyword">if</span> files.<span class="hljs-string">hasNext =&gt;</span>
+            fileHandle = Some(Source.fromFile(files.<span class="hljs-keyword">next</span>()))
+            currentIterator = fileHandle.<span class="hljs-keyword">map</span>(<span class="hljs-number">_</span>.getLines)
+            nextRec()
+          case None <span class="hljs-keyword">if</span> !files.<span class="hljs-string">hasNext =&gt;</span>
+            null
+          case Some(it) <span class="hljs-keyword">if</span> it.<span class="hljs-string">hasNext =&gt;</span>
+            it.<span class="hljs-keyword">next</span>()
+          case Some(it) <span class="hljs-keyword">if</span> !it.hasNext &amp;&amp; files.<span class="hljs-string">hasNext =&gt;</span>
+            fileHandle.<span class="hljs-keyword">foreach</span>(<span class="hljs-number">_</span>.<span class="hljs-keyword">close</span>())
+            fileHandle = Some(Source.fromFile(files.<span class="hljs-keyword">next</span>()))
+            currentIterator = fileHandle.<span class="hljs-keyword">map</span>(<span class="hljs-number">_</span>.getLines)
+            nextRec()
+          case Some(it) <span class="hljs-keyword">if</span> !it.hasNext &amp;&amp; !files.<span class="hljs-string">hasNext =&gt;</span>
+            fileHandle.<span class="hljs-keyword">foreach</span>(<span class="hljs-number">_</span>.<span class="hljs-keyword">close</span>())
+            null
+          case <span class="hljs-string">_ =&gt;</span> null
+
+        }
+      }
+      nextRec()
+    }
+  }
+
+}</div></div></div></div></body></html>

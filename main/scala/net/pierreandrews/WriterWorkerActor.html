@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><title>main/scala/net/pierreandrews/WriterWorkerActor</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../"><meta name="groc-document-path" content="main/scala/net/pierreandrews/WriterWorkerActor"><meta name="groc-project-path" content="src/main/scala/net/pierreandrews/WriterWorkerActor.scala"><link rel="stylesheet" type="text/css" media="all" href="../../../../assets/style.css"><script type="text/javascript" src="../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/main/scala/net/pierreandrews/WriterWorkerActor.scala</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">package net<span class="hljs-class">.pierreandrews</span>
+
+import scala<span class="hljs-class">.collection</span><span class="hljs-class">.mutable</span>
+
+import akka<span class="hljs-class">.actor</span>._
+import net<span class="hljs-class">.pierreandrews</span><span class="hljs-class">.Protocol</span>._
+import net<span class="hljs-class">.pierreandrews</span><span class="hljs-class">.utils</span><span class="hljs-class">.FileCache</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>A write workers is responsible for pulling data from a set of readers and push them on the local filesystem.</p>
+<p>The WriterActor manager assigns readers to this worker transparently. The worker doesn&#39;t know that it&#39;s part of a
+cluster and if the logs are coming from a remote actor or not.</p>
+<p>This worker get work by pulling it from the reader. This allows for a better flow control and avoids overloading the
+akka and cluster messages queues when the writer blocks.</p>
+<p>The worker starts in a mode that only accepts registering messages, when all the cluster is up and readers have all
+registered, we switch (become) to another mode where we query the reader for work and write logs to the local filesystem
+(using FileCache).</p>
+<p>When the worker pulls work from the reader, this one might not have any lines currently available for this partition,
+in this case, the writer becomes idle and will only start pulling work again when a reader sends it a LogAvailable message.</p>
+<p>While a writer actor can deal with multiple readers from multiple nodes, we know that:</p>
+<ul>
+<li>each reader is only assigned one single writer from each node
+This means that no one else will try to write concurrently to the local files assigned to this worker.</li>
+</ul>
+<p>User: pierre
+Date: 11/28/14</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WriterWorkerActor</span>(<span class="hljs-title">args</span>: <span class="hljs-title">LogSplitAppArgs</span>, <span class="hljs-title">writerId</span>: <span class="hljs-title">Int</span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Actor</span> <span class="hljs-title">with</span> <span class="hljs-title">ActorLogging</span> </span>{</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>we do not want to keep file handles open for all possible userIDs
+so we keep an LRU cache of opened file handles.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">fileCache</span> =</span> <span class="hljs-keyword">new</span> <span class="hljs-type">FileCache</span>(args)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>how many readers are still active. When this becomes 0 again, we are done pulling work.</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-tag">var</span> readerCnt = <span class="hljs-number">0</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>keep track of the registered readers</p></div></div><div class="code"><div class="wrapper">  val readers: mutable<span class="hljs-class">.ListBuffer</span>[ActorRef] = mutable.<span class="hljs-function"><span class="hljs-title">ListBuffer</span><span class="hljs-params">()</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>keep track of readers that are replying (avoid flooding readers that are not responding)</p></div></div><div class="code"><div class="wrapper">  val activeReaders: mutable.Map[(Int, Int), ActorRef] = mutable.Map()
+
+  override <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">postStop</span><span class="hljs-params">()</span>:</span> Unit = {
+    fileCache.close()
+  }
+
+  override <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">receive</span>:</span> Receive = {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>All the cluster is up and readers have all been assigned to writers,
+the manager is telling us that we can start working</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-keyword">case</span> StartReading =&gt;
+      <span class="hljs-keyword">if</span> (readerCnt == <span class="hljs-number">0</span>) {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>no readers assigned to this writer, just stop it straight away</p></div></div><div class="code"><div class="wrapper">        context.stop(<span class="hljs-keyword">self</span>)
+      } <span class="hljs-keyword">else</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>otherwise, we should become active</p></div></div><div class="code"><div class="wrapper">        log.<span class="hljs-function"><span class="hljs-title">info</span><span class="hljs-params">(<span class="hljs-string">"Writer {}.{} is becoming active"</span>, args.serverID, writerId)</span></span>
+        context.<span class="hljs-function"><span class="hljs-title">become</span><span class="hljs-params">(activeWriter)</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p> and start pulling work from the reader</p></div></div><div class="code"><div class="wrapper">        requestLogs<span class="hljs-literal">()</span>
+      }
+
+    <span class="hljs-keyword">case</span> <span class="hljs-type">RegisterReader</span>(readerServer, readerPart, _) =&gt;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>a reader is being assigned to us by the manager. Because we used forward, sender() refers to the
+reader worker and not the manager.</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-function">register</span>(<span class="hljs-function">sender</span>(), readerServer, readerPart)
+
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>request more work from the readers</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">requestLogs</span><span class="hljs-params">()</span>:</span> Unit = {
+    activeReaders.foreach {
+      case (k, v) =&gt;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>once we have requested work from a reader
+we shouldn&#39;t request more work until it answers</p></div></div><div class="code"><div class="wrapper">        activeReaders.remove(k)
+        v ! RequestLog(args.serverID)
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">activeWriter</span>:</span> Receive = {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>the worker is active, it can either:</p>
+<ul>
+<li>receive a log from a reader to write down locally</li>
+</ul></div></div><div class="code"><div class="wrapper">    case <span class="hljs-function"><span class="hljs-title">WriteLog</span><span class="hljs-params">(readerServer, log, partIdx)</span></span> =&gt;
+      fileCache.<span class="hljs-function"><span class="hljs-title">write</span><span class="hljs-params">(log, readerServer, partIdx)</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>the reader replied, add it back to the list of active readers</p></div></div><div class="code"><div class="wrapper">      activeReaders.<span class="hljs-function"><span class="hljs-title">put</span><span class="hljs-params">((readerServer, partIdx)</span></span>, <span class="hljs-function"><span class="hljs-title">sender</span><span class="hljs-params">()</span></span>)
+      <span class="hljs-function"><span class="hljs-title">requestLogs</span><span class="hljs-params">()</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>receive a notification from a reader that work is available for this writer</li>
+</ul></div></div><div class="code"><div class="wrapper">    case LogAvailable =&gt;
+      <span class="hljs-function"><span class="hljs-title">sender</span><span class="hljs-params">()</span></span> ! <span class="hljs-function"><span class="hljs-title">RequestLog</span><span class="hljs-params">(serverId = args.serverID)</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><ul>
+<li>receive a notification that a particular reader already loaded all the logs
+files that were assigned to him and that we shouldn&#39;t expect anything from it.
+Because this writer pulls work from multiple readers, it might receive mode than
+one of this message and should make sure to shutdown only when all the readers are done.</li>
+</ul></div></div><div class="code"><div class="wrapper">    case <span class="hljs-function"><span class="hljs-title">LogDone</span><span class="hljs-params">(readerServer, partIdx)</span></span> =&gt;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>remove the actor reference so we stop asking it for work</p></div></div><div class="code"><div class="wrapper">      activeReaders -= ((readerServer, partIdx))
+      log.<span class="hljs-function"><span class="hljs-title">info</span><span class="hljs-params">(<span class="hljs-string">"log done for {}.{}"</span>, readerServer, partIdx)</span></span>
+      readerCnt -= <span class="hljs-number">1</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>do not stop the writer until ALL partitions are done</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-tag">if</span> (readerCnt == <span class="hljs-number">0</span>) {
+        <span class="hljs-tag">log</span><span class="hljs-class">.info</span>(<span class="hljs-string">"no more readers, closing writer {}.{}"</span>, args.serverID, writerId)
+        <span class="hljs-tag">context</span><span class="hljs-class">.stop</span>(self)
+      }
+
+  }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>register an actor on this writer</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">register</span><span class="hljs-params">(reader: ActorRef, readerServer: Int, readerPart: Int)</span>:</span> Unit = {
+    log.info(<span class="hljs-string">"Reader {}.{} registering on {}.{}"</span>, readerServer, readerPart, args.serverID, writerId)
+    activeReaders.put((readerServer, readerPart), sender())
+    readers.prepend(sender())
+    readerCnt += <span class="hljs-number">1</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>register the writer on the reader.</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-function_or_atom">reader</span> <span class="hljs-exclamation_mark">!</span> <span class="hljs-variable">RegisterWriter</span>(<span class="hljs-function_or_atom">args</span>.<span class="hljs-function_or_atom">serverID</span>)
+  }
+}</div></div></div></div></body></html>

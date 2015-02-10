@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en"><head><title>test/scala/net/pierreandrews/utils/LineSorterTest</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../../"><meta name="groc-document-path" content="test/scala/net/pierreandrews/utils/LineSorterTest"><meta name="groc-project-path" content="src/test/scala/net/pierreandrews/utils/LineSorterTest.scala"><link rel="stylesheet" type="text/css" media="all" href="../../../../../assets/style.css"><script type="text/javascript" src="../../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/test/scala/net/pierreandrews/utils/LineSorterTest.scala</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">package net.pierreandrews.utils
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.util.Random</span>
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> org.joda.time.DateTime</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> org.scalatest.{FunSuite, Matchers}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Test the line sorter iterator
+User: pierre
+Date: 11/30/14</p></div></div><div class="code"><div class="wrapper">class LineSorterTest extends FunSuite with Matchers {
+
+  test(<span class="hljs-string">"should sort"</span>) {
+
+    val numPerIt = <span class="hljs-number">100</span>
+
+    def sortedSe<span class="hljs-string">q()</span>: Se<span class="hljs-string">q[Int]</span> = Iterator.iterate(numPerIt) { <span class="hljs-string">prev =&gt;</span>
+      val dec = Random.nextInt(prev)
+      prev - dec
+    }.take(numPerIt).toSeq
+
+    val it1 = sortedSe<span class="hljs-string">q()</span>
+    val it2 = sortedSe<span class="hljs-string">q()</span>
+    val it3 = sortedSe<span class="hljs-string">q()</span>
+
+    val expected = (it1 ++ it2 ++ it3).sortBy(<span class="hljs-string">x =&gt;</span> -<span class="hljs-keyword">x</span>)
+
+    val it: Se<span class="hljs-string">q[Int]</span> = new LineSorter(Se<span class="hljs-string">q(it1.iterator, it2.iterator, it3.iterator)</span>, (<span class="hljs-keyword">x</span>: Int) =&gt; Some(<span class="hljs-keyword">x</span>)).toSeq
+
+    it.toSeq should equal(expected)
+
+  }
+
+  test(<span class="hljs-string">"should sort dates"</span>) {
+    import net.pierreandrews.SorterActor.JodaDateTimeOrdering
+
+    val numPerIt = <span class="hljs-number">5</span>
+    def sortedSe<span class="hljs-string">q()</span>: Se<span class="hljs-string">q[DateTime]</span> = Iterator.iterate(System.currentTimeMillis) { <span class="hljs-string">previousTS =&gt;</span>
+      val dec = Random.nextInt(<span class="hljs-number">3600</span>) * <span class="hljs-number">1000</span>L
+      previousTS - dec
+    }.<span class="hljs-keyword">map</span> { <span class="hljs-string">ts =&gt;</span>
+      new DateTime(ts)
+    }.take(<span class="hljs-number">5</span>).toSeq
+
+    val it1 = sortedSe<span class="hljs-string">q()</span>
+    val it2 = sortedSe<span class="hljs-string">q()</span>
+    val it3 = sortedSe<span class="hljs-string">q()</span>
+
+    val expected = (it1 ++ it2 ++ it3).sortBy(<span class="hljs-string">x =&gt;</span> <span class="hljs-keyword">x</span>).<span class="hljs-keyword">reverse</span>
+    val it: Se<span class="hljs-string">q[DateTime]</span> = new LineSorter(Se<span class="hljs-string">q(it1.iterator, it2.iterator, it3.iterator)</span>, (<span class="hljs-keyword">x</span>: DateTime) =&gt; Some(<span class="hljs-keyword">x</span>)).toSeq
+
+    it.toSeq should equal(expected)
+
+  }
+
+  test(<span class="hljs-string">"should sort with illegal lines"</span>) {
+
+    val numPerIt = <span class="hljs-number">100</span>
+
+    def sortedSe<span class="hljs-string">q()</span>: Se<span class="hljs-string">q[Int]</span> = Iterator.iterate(numPerIt) { <span class="hljs-string">prev =&gt;</span>
+      val dec = Random.nextInt(prev)
+      prev - dec
+    }.take(numPerIt).toSeq
+
+    val it1 = sortedSe<span class="hljs-string">q()</span>
+    val it2 = sortedSe<span class="hljs-string">q()</span>
+    val it3 = sortedSe<span class="hljs-string">q()</span>
+
+    val expected = (it1 ++ it2 ++ it3).filter(<span class="hljs-number">_</span><span class="hljs-variable">%4</span>!=<span class="hljs-number">0</span>).sortBy(<span class="hljs-string">x =&gt;</span> -<span class="hljs-keyword">x</span>)
+
+    def sortWithFail(<span class="hljs-keyword">x</span>: Int) = {
+      <span class="hljs-keyword">if</span>(<span class="hljs-keyword">x</span> % <span class="hljs-number">4</span> == <span class="hljs-number">0</span>) None
+      <span class="hljs-keyword">else</span> Some(<span class="hljs-keyword">x</span>)
+    }
+
+    val it: Se<span class="hljs-string">q[Int]</span> = new LineSorter(Se<span class="hljs-string">q(it1.iterator, it2.iterator, it3.iterator)</span>, sortWithFail).toSeq
+
+    it.toSeq should equal(expected)
+  }
+
+}</div></div></div></div></body></html>

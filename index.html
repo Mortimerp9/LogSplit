@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang="en"><head><title>index</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="index"><meta name="groc-project-path" content="README.md"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">README.md</div></div><div id="document"><div class="segment"><div class="comments "><div class="wrapper"><h1 id="logsplit-with-akka-cluster">LogSplit with Akka Cluster</h1>
+<p>This is an example of using Akka Clustering to perform log distribution
+between distributed servers.</p>
+<p>I was hitching to test the clustering mode in Akka and wanted to find
+a &quot;real world&quot; example that wasn&#39;t too big either. That&#39;s when I
+stumbled over this <em>technical assignment</em> and I thought it would be
+a fun week end project.</p>
+<p><em>While the code works, I am still working on the literal description
+of what&#39;s going on.</em></p>
+<h2 id="problem-statement">Problem Statement</h2>
+<p>You have a number of web servers (let&#39;s assume three) that receive
+load balanced traffic for your web site. On each server, you log
+each connection, including a cookie containing a <code>userid</code>. The logs you
+collect are ordered by time.</p>
+<p>Write a program that re-groups all the connection logs for one user on
+the same server. You can place the grouped output on any one server or
+on many servers, as long as all the log entries of one user are
+together on the same physical server.</p>
+<p>Example of a log file:</p>
+<pre><code>177.126.180.83 - - [15/Aug/2013:13:54:38 -0300] &quot;GET /meme.jpg HTTP/1.1&quot; 200 2148 &quot;-&quot; &quot;userid=5352b590-05ac-11e3-9923-c3e7d8408f3a&quot; 
+177.126.180.83 - - [15/Aug/2013:13:54:38 -0300] &quot;GET /lolcats.jpg HTTP/1.1&quot; 200 5143 &quot;-&quot; &quot;userid=f85f124a-05cd-11e3-8a11-a8206608c529&quot; 
+177.126.180.83 - - [15/Aug/2013:13:57:48 -0300] &quot;GET /lolcats.jpg HTTP/1.1&quot; 200 5143 &quot;-&quot; &quot;userid=5352b590-05ac-11e3-9923-c3e7d8408f3a&quot;</code></pre>
+<p>Parsing wasn&#39;t the point of this exercise, the distribution of the file
+is the interesting part. While this could be accomplished with hadoop,
+I wanted to play with a lighter setup.</p>
+<h2 id="possible-solution">Possible Solution</h2>
+<p>The idea behind my approach is to use Akka+scala clustering to
+distribute the logs between the servers. The code is extensively
+documented, but please let me know if you have questions.</p>
+<h2 id="design-and-data-flow">Design and Data Flow</h2>
+<p>Akka deals with the communication between servers and once all nodes
+are registered on the cluster, the actors talk to each other
+transparently, without having to know if an actor is on a remote
+server or in the same JVM.</p>
+<p>The data flow is divided in two main steps:</p>
+<ul>
+<li>data distribution between server</li>
+<li>local data sorting</li>
+</ul>
+<p>The distribution of work assumes the following:</p>
+<ul>
+<li>logs are already ordered in descending date order on each server</li>
+<li>each server has a set of buckets of logs, numbered from 0 (with the
+newest date at the top) to N (with the oldest date at the bottom)</li>
+</ul>
+<p>This is a common pattern in log systems and the assumptions help in
+distributing work to separate workers (by just giving different files
+to the workers). If we were dealing with a big giant file, we could
+always chunk it between actors by use of nio channels.</p>
+<p>(note that the descending/ascending order of logs in each file is
+not very important, as long as they are sorted in one way or the other)</p>
+<h2 id="data-distribution">Data Distribution</h2>
+<p>The data distribution step relies on two main type of actors:</p>
+<ul>
+<li>the <em>Reader</em> actor is responsible for loading a bucket from the
+local disk system, assigning a partition (server where all this
+user&#39; logs will eventually live) to each log line and distributing
+these lines to the right <em>Writer</em>. One server will use a number of
+reader worker to serve lines from bucket files in parallel.</li>
+<li>the <em>Writer</em> actor is responsible from pulling log lines from
+<em>Readers</em> and writing them to disk in a file part assigned to a
+particular user. To help running the process in parallel, we run a
+set of <em>WriterWorker</em> on each server that serve a set of <em>Readers</em>.</li>
+</ul>
+<p>The <em>reader</em> and <em>writer</em> do not need to know on which node the actor
+they are talking to are located. They could be on the local node or
+the remote nodes.</p>
+<p>Each reader is assigned <em>one</em> writer per node (including the local
+node) and a set of local part files to read from.</p>
+<p>Each writer can deal with multiple readers and usually manages a fixed
+set of parts/bucket.</p>
+<p>The reader is mostly passive, it will fill up a buffer and then wait
+for the writers to pull log lines. Writers are either blocked writing
+to the local disk or pulling work from the assigned readers.</p>
+<h2 id="sorting">Sorting</h2>
+<p>Because all part files are sorted in the original log files, when we
+send them over to a single server, we keep them in separate sorted
+part files for one user. At the end of the data distribution step, the
+output directory will contain something like:</p>
+<pre><code>fcf011b9-b28d-4eab-b0d7-faa7695dbd74.0.3.part
+fcf011b9-b28d-4eab-b0d7-faa7695dbd74.0.4.part
+fd0a3813-7430-4b1e-a03d-0eb5acbee1c4.0.0.part
+fd0a3813-7430-4b1e-a03d-0eb5acbee1c4.0.1.part
+fd0a3813-7430-4b1e-a03d-0eb5acbee1c4.0.2.part
+fd0a3813-7430-4b1e-a03d-0eb5acbee1c4.0.3.part
+fd0a3813-7430-4b1e-a03d-0eb5acbee1c4.0.4.part
+fd60aaf3-5dda-40bd-9474-7926b85e4197.0.0.part
+fd60aaf3-5dda-40bd-9474-7926b85e4197.0.1.part
+fd60aaf3-5dda-40bd-9474-7926b85e4197.0.2.part
+fd60aaf3-5dda-40bd-9474-7926b85e4197.0.3.part
+fd60aaf3-5dda-40bd-9474-7926b85e4197.0.4.part
+fe967415-c8ec-46c0-8112-7f15136bf9b1.0.0.part
+fe967415-c8ec-46c0-8112-7f15136bf9b1.0.1.part
+fe967415-c8ec-46c0-8112-7f15136bf9b1.0.2.part
+fe967415-c8ec-46c0-8112-7f15136bf9b1.0.3.part
+fe967415-c8ec-46c0-8112-7f15136bf9b1.0.4.part
+ff911373-c19e-4535-a50e-42195c17644f.0.0.part
+ff911373-c19e-4535-a50e-42195c17644f.0.1.part
+ff911373-c19e-4535-a50e-42195c17644f.0.2.part
+ff911373-c19e-4535-a50e-42195c17644f.0.3.part
+ff911373-c19e-4535-a50e-42195c17644f.0.4.part</code></pre>
+<p>where we have for each userid a set of part files per server (first
+id) and per bucket from that server.</p>
+<p>The sort step is responsible to merge the partial sorted files in one
+single file for each user. The sorter actor doesn&#39;t need to know it&#39;s
+running in a cluster and is only responsible for distributing parallel
+sorting tasks to local actors.</p>
+<h2 id="requirements">Requirements</h2>
+<p>This is an sbt/scala project, so you will need java, scala and sbt
+installed.</p>
+<h2 id="building">Building</h2>
+<p>you can build a package jar with</p>
+<p><code>sbt clean assembly</code></p>
+<p>you can also run the following commands directly with <code>sbt &#39;run-main...&#39;</code>
+without running the assembly.</p>
+<h2 id="generating-a-sample">Generating a Sample</h2>
+<p>You can generate a sample of log files with the utils.LogGenerator.</p>
+<p><code>&gt; java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.utils.LogGenerator --output /tmp/logsplittest/servers --linePerFile 10000 --numUsers 1000 --numFiles 50</code></p>
+<p>This will generate three folders in /tmp/logsplittest/servers with 50
+files each containing 10000 lines. The userids will be selected from a
+random pool of 1000 users.</p>
+<p>You can then either transfer each serverN file to a separate machine,
+or just run three separate JVMs pointing to these separate folders.</p>
+<h2 id="running-the-code">Running the Code</h2>
+<p>The app is currently configured to run with three separate JVMs on the
+same machine (localhost) on the ports 2550, 2551 and 2552. You can
+start the three JVMs with:</p>
+<p><code>&gt;  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar  net.pierreandrews.LogSplitApp --port 2550 --output /tmp/logsplittest/outputs/server0 --input /tmp/logsplittest/servers/server0 --serverID 0</code></p>
+<p><code>&gt;  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar  net.pierreandrews.LogSplitApp --port 2551 --output /tmp/logsplittest/outputs/server1 --input /tmp/logsplittest/servers/server1 --serverID 1</code></p>
+<p><code>&gt;  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.LogSplitApp --port 2552 --output /tmp/logsplittest/outputs/server2 --input /tmp/logsplittest/servers/server2 --serverID 2</code></p>
+<p>If you are going to run each JVM on separate machines, you need to
+change the seeds, either with the <code>--seeds</code> arguments, e.g. for one
+server:</p>
+<p><code>&gt;  java -cp LogSplit-assembly-0.1-SNAPSHOT.jar net.pierreandrews.LogSplitApp --port 2550 --output /tmp/logsplittest/outputs/server0 --input /tmp/logsplittest/servers/server0 --serverID 0 --seeds 192.168.1.21:2550,192.168.1.23:2551,192.168.1.1:2550</code></p>
+<p>or by updating the <code>application.conf</code> settings. Given the limited time
+and resources I had, I couldn&#39;t test this extensively on distributed
+servers but it should work transparently.</p>
+<h2 id="tweakingtuning">Tweaking/Tuning</h2>
+<p>You can tune the number of workers, cache/buffer sizes, etc. by
+changing the command line arguments. Please see LogsplitAppArgs for
+documentation. The current settings work &quot;OK&quot; on my laptop, but are
+not optimal.</p>
+<h2 id="assumption-and-alternative-solution">Assumption and alternative solution</h2>
+<p>The major assumption is that user-ids are evenly distributed between
+each server, that is, there no one server where a id would appear a
+lot more than another server. We assume some fair load-balancing
+between servers etc. that would create such balanced logs.</p>
+<p>This assumption is important as the architecture of the system evenly
+distributes each users logs to each server. That means that with three
+servers, around 2/3 of the logs of a node will be transferred over to
+the other nodes in the cluster. If users are evenly distributed, this
+is as good a solution as any; however, if logs are unbalanced to start
+with the current data flow will create more data transfers than
+required.</p>
+<p>If we were to deal with unbalanced logs, it would be better to split
+logs per user on each server first, then negotiate between each node
+which one contains the most logs for each user and send the data over
+from the smallest nodes to the bigger node.</p>
+<p>Running this on an hadoop or spark cluster would definitely require a
+lot less code scaffolding, even if it would require a larger server
+architecture. Apache Samza (LinkedIn) also seemed to be a good
+solution but required to setup kafka, zookeeper and YARN, which was
+quite some overhead.</p></div></div></div></div></body></html>

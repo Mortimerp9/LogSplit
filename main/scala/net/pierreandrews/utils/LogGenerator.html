@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><title>main/scala/net/pierreandrews/utils/LogGenerator</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../../../"><meta name="groc-document-path" content="main/scala/net/pierreandrews/utils/LogGenerator"><meta name="groc-project-path" content="src/main/scala/net/pierreandrews/utils/LogGenerator.scala"><link rel="stylesheet" type="text/css" media="all" href="../../../../../assets/style.css"><script type="text/javascript" src="../../../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/main/scala/net/pierreandrews/utils/LogGenerator.scala</div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">package net.pierreandrews.utils
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> java.io.{File, PrintWriter}</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> java.text.SimpleDateFormat</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> java.util.{Date, UUID}</span>
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.util.Random</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> scala.util.control.NonFatal</span>
+
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> com.quantifind.sumac.{ArgMain, FieldArgs}</span>
+<span class="hljs-preprocessor"><span class="hljs-keyword">import</span> com.quantifind.sumac.validation.{Positive, Required}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Generate sample logs. This is pretty naive but tries to generate logs looking like the instruction, with other assumptions:</p>
+<ul>
+<li>log files are in buckets and not in one monolithic file</li>
+<li>each bucket is sorted, with the top line having the max date and bottom line the min date</li>
+<li>each bucket is numbered from 0 to N, bucket 0 has the max date at the top, the N bucket as the min date at the bottom</li>
+<li>buckets are named with the pattern log.X.log</li>
+</ul>
+<p>See LogGenArgs for possible command line arguments.</p>
+<p>Random noise is generated to create invalid lines (again, naively truncates the end of some lines)</p>
+<p>Dates are generated from now in a decreasing order, at random distances one from the other (but always going towards the
+past).</p>
+<p>We assume a limited set of user ids (to have log lines to group), you can specify this on the command line. Then each log
+line is assigned a random user from this limited set, this means that at the end, you might have less users in the generated
+logs than requested.</p>
+<p>User: pierre
+Date: 11/28/14</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">LogGenerator</span> <span class="hljs-keyword"><span class="hljs-keyword">extends</span></span> <span class="hljs-title">ArgMain</span>[</span><span class="hljs-type">LogGenArgs</span>] {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>generate dates of the format: 15/Aug/2013:13:54:38 -0300</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">dateformat</span> =</span> <span class="hljs-keyword">new</span> <span class="hljs-type">SimpleDateFormat</span>(<span class="hljs-string">"dd/MMM/YYYY:HH:mm:ss Z"</span>)</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>generate random sequential timestamps. Start now and goes backward. This will break if you
+really ask for too many timestamps and go past the 0 epoch</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">tsGenerator</span><span class="hljs-params">()</span>:</span> Iterator[String] = Iterator.iterate(System.currentTimeMillis) { previousTS =&gt;
+    val dec = Random.nextInt(<span class="hljs-number">3600</span>) * <span class="hljs-number">1000L</span>
+    previousTS - dec
+  }.map { ts =&gt;
+    dateformat.format(new Date(ts))
+  }
+
+  override <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span><span class="hljs-params">(args: LogGenArgs)</span>:</span> Unit = {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>generate a fixed number of user ids and repeat it randomly</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">uids</span>:</span> <span class="hljs-type">Iterator</span>[<span class="hljs-type">String</span>] = {
+      <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">ids</span>:</span> <span class="hljs-type">Seq</span>[<span class="hljs-type">String</span>] = <span class="hljs-keyword">for</span> (i &lt;- <span class="hljs-number">0</span> until args.numUsers) <span class="hljs-keyword">yield</span> { <span class="hljs-type">UUID</span>.randomUUID().toString }
+      <span class="hljs-type">Iterator</span>.continually {
+        <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">randIdx</span> =</span> <span class="hljs-type">Random</span>.nextInt(ids.size)
+        ids(randIdx)
+      }
+    }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>randomly generate errors in the logs</p></div></div><div class="code"><div class="wrapper">    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">makeError</span>:</span> Boolean = Random.nextDouble() &lt; args.errorRate</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>list of dirs to output to, one per server</p></div></div><div class="code"><div class="wrapper">    val <span class="hljs-variable">outputDirs =</span> (<span class="hljs-number">0</span> until args.numServers).<span class="hljs-built_in">map</span> { <span class="hljs-variable">serverID =</span>&gt;</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>these are generated locally, if you want to simulate on separate physical
+servers, you&#39;ll have to copy the files over</p></div></div><div class="code"><div class="wrapper">      <span class="hljs-keyword">new</span> <span class="hljs-keyword">File</span>(args.output, s<span class="hljs-string">"server$serverID"</span>)
+    }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>create logs for each server</p></div></div><div class="code"><div class="wrapper">    outputDirs.<span class="hljs-keyword">foreach</span> {
+      <span class="hljs-keyword">dir</span> =&gt;
+        <span class="hljs-keyword">if</span>(!<span class="hljs-keyword">dir</span>.exists) {
+          <span class="hljs-keyword">dir</span>.<span class="hljs-keyword">mkdir</span>()
+        }</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>get a new timestamp generator</p></div></div><div class="code"><div class="wrapper">        val tsGen = <span class="hljs-function"><span class="hljs-title">tsGenerator</span><span class="hljs-params">()</span></span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>open N files and write to them</p></div></div><div class="code"><div class="wrapper">        (<span class="hljs-number">0</span> until args.numFiles).foreach {
+          fileID =&gt;
+            val <span class="hljs-keyword">file</span> = <span class="hljs-keyword">new</span> PrintWriter(<span class="hljs-keyword">new</span> <span class="hljs-keyword">File</span>(dir, s<span class="hljs-string">"log.$fileID.log"</span>))
+            <span class="hljs-keyword">try</span> {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>generate M lines per file</p></div></div><div class="code"><div class="wrapper">              (<span class="hljs-number">0</span> until args.linePerFile).foreach { l =&gt;
+                <span class="hljs-keyword">val</span> ts = tsGen.next<span class="hljs-literal">()</span>
+                <span class="hljs-keyword">val</span> uid = uids.next<span class="hljs-literal">()</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>except for the date and userid, the rest of the line content is the same</p></div></div><div class="code"><div class="wrapper">                <span class="hljs-function"><span class="hljs-keyword">val</span> <span class="hljs-title">line</span> =</span> s<span class="hljs-string">"""177.126.180.83 - - [$ts] "GET /meme.jpg HTTP/1.1" 200 2148 "-" "userid=$uid"""</span><span class="hljs-string">"</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>maybe create som error</p></div></div><div class="code"><div class="wrapper">                val outline = <span class="hljs-keyword">if</span>(makeError) {
+                  <span class="hljs-built_in">line</span>.substring(<span class="hljs-number">0</span>, Random.nextInt(<span class="hljs-built_in">line</span>.<span class="hljs-built_in">length</span>)+<span class="hljs-number">1</span>)
+                } <span class="hljs-keyword">else</span> <span class="hljs-built_in">line</span>
+                <span class="hljs-built_in">file</span>.println(outline)
+              }
+            } <span class="hljs-keyword">catch</span> {
+              <span class="hljs-keyword">case</span> NonFatal(e) =&gt;
+                e.printStackTrace()
+                System.exit(-<span class="hljs-number">1</span>)
+            } <span class="hljs-keyword">finally</span> {
+              <span class="hljs-built_in">file</span>.<span class="hljs-built_in">close</span>()
+            }
+        }
+
+    }
+
+  }
+
+}</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>command line arguments, using Sumac</p></div></div><div class="code"><div class="wrapper"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LogGenArgs</span> <span class="hljs-keyword"><span class="hljs-keyword">extends</span></span> <span class="hljs-title">FieldArgs</span> {</span>
+
+  <span class="hljs-annotation">@Required</span>
+  <span class="hljs-keyword">var</span> output: <span class="hljs-type">File</span> = _</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>sets the number of output folders</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-variable">@Positive</span>
+  var numServers = <span class="hljs-number">3</span>
+  <span class="hljs-variable">@Positive</span>
+  var <span class="hljs-attribute">linePerFile</span>: Int = <span class="hljs-number">1000</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>number of buckets</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@Positive</span>
+  <span class="hljs-reserved">var</span> <span class="hljs-attribute">numFiles</span>: Int = <span class="hljs-number">10</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>how often should an error be generated</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@Positive</span>
+  <span class="hljs-reserved">var</span> <span class="hljs-attribute">errorRate</span>: Double = <span class="hljs-number">0.001</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>how many different users do we want</p></div></div><div class="code"><div class="wrapper">  <span class="hljs-property">@Positive</span>
+  <span class="hljs-reserved">var</span> <span class="hljs-attribute">numUsers</span>: Int = <span class="hljs-number">100</span>
+
+  addValidation {</div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>validate the output directory.</p></div></div><div class="code"><div class="wrapper">    require(<span class="hljs-keyword">output</span><span class="hljs-typename">.exists</span> <span class="hljs-keyword">&amp;</span><span class="hljs-keyword">&amp;</span> <span class="hljs-keyword">output</span><span class="hljs-typename">.isDirectory</span> <span class="hljs-keyword">&amp;</span><span class="hljs-keyword">&amp;</span> <span class="hljs-keyword">output</span><span class="hljs-typename">.listFiles</span>()<span class="hljs-typename">.isEmpty</span>, <span class="hljs-string">"Output has to be an empty directory"</span>)
+  <span class="hljs-keyword">}</span>
+<span class="hljs-keyword">}</span></div></div></div></div></body></html>
