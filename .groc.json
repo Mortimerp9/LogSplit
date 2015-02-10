@@ -8,6 +8,7 @@
     "index": "README.md",
     "github": true,
     "whitespace-after-token": false,
-    "style": "thin"
+    "style": "thin",
+    "strip": "main/scala/net/pierreandrews"
 }
  
