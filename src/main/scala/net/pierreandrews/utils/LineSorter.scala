@@ -32,7 +32,7 @@ class LineSorter[I, T: Ordering](inputs: Seq[Iterator[I]], extractOrderField: I 
 
   /**
    * extract the next line, choosing the one with the maximum sorting field from all the available iterators
-   * @return the maximum next line
+   * returns the maximum next line
    */
   override def next(): I = {
     // only get the possible next line from the iterators that still have content available

@@ -1,0 +1,11 @@
+{
+    "glob": [
+        "src/**/*.scala",
+        "*.md"
+    ],
+    "index": "README.md",
+    "github": false,
+    "whitespace-after-token": false,
+    "style": "thin"
+}
+ 
