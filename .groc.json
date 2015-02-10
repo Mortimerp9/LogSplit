@@ -9,6 +9,6 @@
     "github": true,
     "whitespace-after-token": false,
     "style": "thin",
-    "strip": "main/scala/net/pierreandrews"
+    "strip": "src/main/scala/net/pierreandrews"
 }
  
