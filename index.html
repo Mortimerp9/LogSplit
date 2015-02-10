@@ -27,6 +27,8 @@ I wanted to play with a lighter setup.</p>
 <p>The idea behind my approach is to use Akka+scala clustering to
 distribute the logs between the servers. The code is extensively
 documented, but please let me know if you have questions.</p>
+<p>Once you are done reading this, you might want to start exploring from
+the <a href="./LogSplitApp.html">main class: <code>LogSplitApp</code></a>.</p>
 <h2 id="design-and-data-flow">Design and Data Flow</h2>
 <p>Akka deals with the communication between servers and once all nodes
 are registered on the cluster, the actors talk to each other
