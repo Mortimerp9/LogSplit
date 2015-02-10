@@ -215,40 +215,100 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
     }, {
       "type": "folder",
       "data": {
-        "path": "main",
-        "title": "main"
+        "path": "src",
+        "title": "src"
       },
       "depth": 1,
       "children": [
         {
           "type": "folder",
           "data": {
-            "path": "main/java",
-            "title": "java"
+            "path": "src/main",
+            "title": "main"
           },
           "depth": 2,
           "children": [
             {
               "type": "folder",
               "data": {
-                "path": "main/java/net",
-                "title": "net"
+                "path": "src/main/java",
+                "title": "java"
               },
               "depth": 3,
               "children": [
                 {
                   "type": "folder",
                   "data": {
-                    "path": "main/java/net/pierreandrews",
-                    "title": "pierreandrews"
+                    "path": "src/main/java/net",
+                    "title": "net"
                   },
                   "depth": 4,
                   "children": [
                     {
                       "type": "folder",
                       "data": {
-                        "path": "main/java/net/pierreandrews/utils",
-                        "title": "utils"
+                        "path": "src/main/java/net/pierreandrews",
+                        "title": "pierreandrews"
+                      },
+                      "depth": 5,
+                      "children": [
+                        {
+                          "type": "folder",
+                          "data": {
+                            "path": "src/main/java/net/pierreandrews/utils",
+                            "title": "utils"
+                          },
+                          "depth": 6,
+                          "children": [
+                            {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".java"],
+                                  "pygmentsLexer": "java",
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Java"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/main/java/net/pierreandrews/utils/LRUOfFiles.java",
+                                "projectPath": "src/main/java/net/pierreandrews/utils/LRUOfFiles.java",
+                                "targetPath": "src/main/java/net/pierreandrews/utils/LRUOfFiles",
+                                "pageTitle": "src/main/java/net/pierreandrews/utils/LRUOfFiles",
+                                "title": "LRUOfFiles"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }, {
+              "type": "folder",
+              "data": {
+                "path": "src/main/scala",
+                "title": "scala"
+              },
+              "depth": 3,
+              "children": [
+                {
+                  "type": "folder",
+                  "data": {
+                    "path": "src/main/scala/net",
+                    "title": "net"
+                  },
+                  "depth": 4,
+                  "children": [
+                    {
+                      "type": "folder",
+                      "data": {
+                        "path": "src/main/scala/net/pierreandrews",
+                        "title": "pierreandrews"
                       },
                       "depth": 5,
                       "children": [
@@ -256,22 +316,221 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                           "type": "file",
                           "data": {
                             "language": {
-                              "nameMatchers": [".java"],
-                              "pygmentsLexer": "java",
+                              "nameMatchers": [".scala"],
                               "multiLineComment": ["/*", "*", "*/"],
                               "singleLineComment": ["//"],
                               "ignorePrefix": "}",
                               "foldPrefix": "^",
-                              "name": "Java"
+                              "name": "Scala"
                             },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/java/net/pierreandrews/utils/LRUOfFiles.java",
-                            "projectPath": "src/main/java/net/pierreandrews/utils/LRUOfFiles.java",
-                            "targetPath": "main/java/net/pierreandrews/utils/LRUOfFiles",
-                            "pageTitle": "main/java/net/pierreandrews/utils/LRUOfFiles",
-                            "title": "LRUOfFiles"
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/LogSplitApp.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/LogSplitApp.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/LogSplitApp",
+                            "pageTitle": "src/main/scala/net/pierreandrews/LogSplitApp",
+                            "title": "LogSplitApp"
                           },
                           "depth": 6,
                           "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/Parser.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/Parser.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/Parser",
+                            "pageTitle": "src/main/scala/net/pierreandrews/Parser",
+                            "title": "Parser"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/Protocol.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/Protocol.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/Protocol",
+                            "pageTitle": "src/main/scala/net/pierreandrews/Protocol",
+                            "title": "Protocol"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/ReaderActor.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/ReaderActor.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/ReaderActor",
+                            "pageTitle": "src/main/scala/net/pierreandrews/ReaderActor",
+                            "title": "ReaderActor"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/SorterActor.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/SorterActor.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/SorterActor",
+                            "pageTitle": "src/main/scala/net/pierreandrews/SorterActor",
+                            "title": "SorterActor"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/WriterActor.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/WriterActor.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/WriterActor",
+                            "pageTitle": "src/main/scala/net/pierreandrews/WriterActor",
+                            "title": "WriterActor"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "file",
+                          "data": {
+                            "language": {
+                              "nameMatchers": [".scala"],
+                              "multiLineComment": ["/*", "*", "*/"],
+                              "singleLineComment": ["//"],
+                              "ignorePrefix": "}",
+                              "foldPrefix": "^",
+                              "name": "Scala"
+                            },
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/WriterWorkerActor.scala",
+                            "projectPath": "src/main/scala/net/pierreandrews/WriterWorkerActor.scala",
+                            "targetPath": "src/main/scala/net/pierreandrews/WriterWorkerActor",
+                            "pageTitle": "src/main/scala/net/pierreandrews/WriterWorkerActor",
+                            "title": "WriterWorkerActor"
+                          },
+                          "depth": 6,
+                          "outline": []
+                        }, {
+                          "type": "folder",
+                          "data": {
+                            "path": "src/main/scala/net/pierreandrews/utils",
+                            "title": "utils"
+                          },
+                          "depth": 6,
+                          "children": [
+                            {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".scala"],
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Scala"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/FileCache.scala",
+                                "projectPath": "src/main/scala/net/pierreandrews/utils/FileCache.scala",
+                                "targetPath": "src/main/scala/net/pierreandrews/utils/FileCache",
+                                "pageTitle": "src/main/scala/net/pierreandrews/utils/FileCache",
+                                "title": "FileCache"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }, {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".scala"],
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Scala"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LineSorter.scala",
+                                "projectPath": "src/main/scala/net/pierreandrews/utils/LineSorter.scala",
+                                "targetPath": "src/main/scala/net/pierreandrews/utils/LineSorter",
+                                "pageTitle": "src/main/scala/net/pierreandrews/utils/LineSorter",
+                                "title": "LineSorter"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }, {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".scala"],
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Scala"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LogGenerator.scala",
+                                "projectPath": "src/main/scala/net/pierreandrews/utils/LogGenerator.scala",
+                                "targetPath": "src/main/scala/net/pierreandrews/utils/LogGenerator",
+                                "pageTitle": "src/main/scala/net/pierreandrews/utils/LogGenerator",
+                                "title": "LogGenerator"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }, {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".scala"],
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Scala"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala",
+                                "projectPath": "src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala",
+                                "targetPath": "src/main/scala/net/pierreandrews/utils/LogSplitUtils",
+                                "pageTitle": "src/main/scala/net/pierreandrews/utils/LogSplitUtils",
+                                "title": "LogSplitUtils"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }
+                          ]
                         }
                       ]
                     }
@@ -283,165 +542,32 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         }, {
           "type": "folder",
           "data": {
-            "path": "main/scala",
-            "title": "scala"
+            "path": "src/test",
+            "title": "test"
           },
           "depth": 2,
           "children": [
             {
               "type": "folder",
               "data": {
-                "path": "main/scala/net",
-                "title": "net"
+                "path": "src/test/scala",
+                "title": "scala"
               },
               "depth": 3,
               "children": [
                 {
                   "type": "folder",
                   "data": {
-                    "path": "main/scala/net/pierreandrews",
-                    "title": "pierreandrews"
+                    "path": "src/test/scala/net",
+                    "title": "net"
                   },
                   "depth": 4,
                   "children": [
                     {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/LogSplitApp.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/LogSplitApp.scala",
-                        "targetPath": "main/scala/net/pierreandrews/LogSplitApp",
-                        "pageTitle": "main/scala/net/pierreandrews/LogSplitApp",
-                        "title": "LogSplitApp"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/Parser.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/Parser.scala",
-                        "targetPath": "main/scala/net/pierreandrews/Parser",
-                        "pageTitle": "main/scala/net/pierreandrews/Parser",
-                        "title": "Parser"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/Protocol.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/Protocol.scala",
-                        "targetPath": "main/scala/net/pierreandrews/Protocol",
-                        "pageTitle": "main/scala/net/pierreandrews/Protocol",
-                        "title": "Protocol"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/ReaderActor.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/ReaderActor.scala",
-                        "targetPath": "main/scala/net/pierreandrews/ReaderActor",
-                        "pageTitle": "main/scala/net/pierreandrews/ReaderActor",
-                        "title": "ReaderActor"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/SorterActor.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/SorterActor.scala",
-                        "targetPath": "main/scala/net/pierreandrews/SorterActor",
-                        "pageTitle": "main/scala/net/pierreandrews/SorterActor",
-                        "title": "SorterActor"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/WriterActor.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/WriterActor.scala",
-                        "targetPath": "main/scala/net/pierreandrews/WriterActor",
-                        "pageTitle": "main/scala/net/pierreandrews/WriterActor",
-                        "title": "WriterActor"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/WriterWorkerActor.scala",
-                        "projectPath": "src/main/scala/net/pierreandrews/WriterWorkerActor.scala",
-                        "targetPath": "main/scala/net/pierreandrews/WriterWorkerActor",
-                        "pageTitle": "main/scala/net/pierreandrews/WriterWorkerActor",
-                        "title": "WriterWorkerActor"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
                       "type": "folder",
                       "data": {
-                        "path": "main/scala/net/pierreandrews/utils",
-                        "title": "utils"
+                        "path": "src/test/scala/net/pierreandrews",
+                        "title": "pierreandrews"
                       },
                       "depth": 5,
                       "children": [
@@ -456,159 +582,43 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
                               "foldPrefix": "^",
                               "name": "Scala"
                             },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/FileCache.scala",
-                            "projectPath": "src/main/scala/net/pierreandrews/utils/FileCache.scala",
-                            "targetPath": "main/scala/net/pierreandrews/utils/FileCache",
-                            "pageTitle": "main/scala/net/pierreandrews/utils/FileCache",
-                            "title": "FileCache"
+                            "sourcePath": "/Users/pierre/dev/logsplit/src/test/scala/net/pierreandrews/ParserTest.scala",
+                            "projectPath": "src/test/scala/net/pierreandrews/ParserTest.scala",
+                            "targetPath": "src/test/scala/net/pierreandrews/ParserTest",
+                            "pageTitle": "src/test/scala/net/pierreandrews/ParserTest",
+                            "title": "ParserTest"
                           },
                           "depth": 6,
                           "outline": []
                         }, {
-                          "type": "file",
+                          "type": "folder",
                           "data": {
-                            "language": {
-                              "nameMatchers": [".scala"],
-                              "multiLineComment": ["/*", "*", "*/"],
-                              "singleLineComment": ["//"],
-                              "ignorePrefix": "}",
-                              "foldPrefix": "^",
-                              "name": "Scala"
-                            },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LineSorter.scala",
-                            "projectPath": "src/main/scala/net/pierreandrews/utils/LineSorter.scala",
-                            "targetPath": "main/scala/net/pierreandrews/utils/LineSorter",
-                            "pageTitle": "main/scala/net/pierreandrews/utils/LineSorter",
-                            "title": "LineSorter"
+                            "path": "src/test/scala/net/pierreandrews/utils",
+                            "title": "utils"
                           },
                           "depth": 6,
-                          "outline": []
-                        }, {
-                          "type": "file",
-                          "data": {
-                            "language": {
-                              "nameMatchers": [".scala"],
-                              "multiLineComment": ["/*", "*", "*/"],
-                              "singleLineComment": ["//"],
-                              "ignorePrefix": "}",
-                              "foldPrefix": "^",
-                              "name": "Scala"
-                            },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LogGenerator.scala",
-                            "projectPath": "src/main/scala/net/pierreandrews/utils/LogGenerator.scala",
-                            "targetPath": "main/scala/net/pierreandrews/utils/LogGenerator",
-                            "pageTitle": "main/scala/net/pierreandrews/utils/LogGenerator",
-                            "title": "LogGenerator"
-                          },
-                          "depth": 6,
-                          "outline": []
-                        }, {
-                          "type": "file",
-                          "data": {
-                            "language": {
-                              "nameMatchers": [".scala"],
-                              "multiLineComment": ["/*", "*", "*/"],
-                              "singleLineComment": ["//"],
-                              "ignorePrefix": "}",
-                              "foldPrefix": "^",
-                              "name": "Scala"
-                            },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala",
-                            "projectPath": "src/main/scala/net/pierreandrews/utils/LogSplitUtils.scala",
-                            "targetPath": "main/scala/net/pierreandrews/utils/LogSplitUtils",
-                            "pageTitle": "main/scala/net/pierreandrews/utils/LogSplitUtils",
-                            "title": "LogSplitUtils"
-                          },
-                          "depth": 6,
-                          "outline": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }, {
-      "type": "folder",
-      "data": {
-        "path": "test",
-        "title": "test"
-      },
-      "depth": 1,
-      "children": [
-        {
-          "type": "folder",
-          "data": {
-            "path": "test/scala",
-            "title": "scala"
-          },
-          "depth": 2,
-          "children": [
-            {
-              "type": "folder",
-              "data": {
-                "path": "test/scala/net",
-                "title": "net"
-              },
-              "depth": 3,
-              "children": [
-                {
-                  "type": "folder",
-                  "data": {
-                    "path": "test/scala/net/pierreandrews",
-                    "title": "pierreandrews"
-                  },
-                  "depth": 4,
-                  "children": [
-                    {
-                      "type": "file",
-                      "data": {
-                        "language": {
-                          "nameMatchers": [".scala"],
-                          "multiLineComment": ["/*", "*", "*/"],
-                          "singleLineComment": ["//"],
-                          "ignorePrefix": "}",
-                          "foldPrefix": "^",
-                          "name": "Scala"
-                        },
-                        "sourcePath": "/Users/pierre/dev/logsplit/src/test/scala/net/pierreandrews/ParserTest.scala",
-                        "projectPath": "src/test/scala/net/pierreandrews/ParserTest.scala",
-                        "targetPath": "test/scala/net/pierreandrews/ParserTest",
-                        "pageTitle": "test/scala/net/pierreandrews/ParserTest",
-                        "title": "ParserTest"
-                      },
-                      "depth": 5,
-                      "outline": []
-                    }, {
-                      "type": "folder",
-                      "data": {
-                        "path": "test/scala/net/pierreandrews/utils",
-                        "title": "utils"
-                      },
-                      "depth": 5,
-                      "children": [
-                        {
-                          "type": "file",
-                          "data": {
-                            "language": {
-                              "nameMatchers": [".scala"],
-                              "multiLineComment": ["/*", "*", "*/"],
-                              "singleLineComment": ["//"],
-                              "ignorePrefix": "}",
-                              "foldPrefix": "^",
-                              "name": "Scala"
-                            },
-                            "sourcePath": "/Users/pierre/dev/logsplit/src/test/scala/net/pierreandrews/utils/LineSorterTest.scala",
-                            "projectPath": "src/test/scala/net/pierreandrews/utils/LineSorterTest.scala",
-                            "targetPath": "test/scala/net/pierreandrews/utils/LineSorterTest",
-                            "pageTitle": "test/scala/net/pierreandrews/utils/LineSorterTest",
-                            "title": "LineSorterTest"
-                          },
-                          "depth": 6,
-                          "outline": []
+                          "children": [
+                            {
+                              "type": "file",
+                              "data": {
+                                "language": {
+                                  "nameMatchers": [".scala"],
+                                  "multiLineComment": ["/*", "*", "*/"],
+                                  "singleLineComment": ["//"],
+                                  "ignorePrefix": "}",
+                                  "foldPrefix": "^",
+                                  "name": "Scala"
+                                },
+                                "sourcePath": "/Users/pierre/dev/logsplit/src/test/scala/net/pierreandrews/utils/LineSorterTest.scala",
+                                "projectPath": "src/test/scala/net/pierreandrews/utils/LineSorterTest.scala",
+                                "targetPath": "src/test/scala/net/pierreandrews/utils/LineSorterTest",
+                                "pageTitle": "src/test/scala/net/pierreandrews/utils/LineSorterTest",
+                                "title": "LineSorterTest"
+                              },
+                              "depth": 7,
+                              "outline": []
+                            }
+                          ]
                         }
                       ]
                     }
