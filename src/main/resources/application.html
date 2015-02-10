@@ -1,33 +1,33 @@
-<!DOCTYPE html><html lang="en"><head><title>src/main/resources/application</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="src/main/resources/application"><meta name="groc-project-path" content="src/main/resources/application.conf"><meta name="groc-github-url" content="https://github.com/Mortimerp9/LogSplit"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/Mortimerp9/LogSplit/blob/master/src/main/resources/application.conf">src/main/resources/application.conf</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper"><span class="err">akka</span> <span class="p">{</span>
-  <span class="err">actor</span> <span class="err">{</span>
-    <span class="err">provider</span> <span class="err">=</span> <span class="nt">&quot;akka.cluster.ClusterActorRefProvider&quot;</span>
-  <span class="p">}</span>
-  <span class="err">remote</span> <span class="p">{</span>
-    <span class="err">log-remote-lifecycle-events</span> <span class="err">=</span> <span class="err">off</span>
-    <span class="err">netty.tcp</span> <span class="err">{</span>
-      <span class="err">hostname</span> <span class="err">=</span> <span class="nt">&quot;127.0.0.1&quot;</span>
-      <span class="err">port</span> <span class="err">=</span> <span class="mi">0</span>
-    <span class="p">}</span>
-  <span class="err">}</span>
+<!DOCTYPE html><html lang="en"><head><title>src/main/resources/application</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content="../../../"><meta name="groc-document-path" content="src/main/resources/application"><meta name="groc-project-path" content="src/main/resources/application.conf"><meta name="groc-github-url" content="https://github.com/Mortimerp9/LogSplit"><link rel="stylesheet" type="text/css" media="all" href="../../../assets/style.css"><script type="text/javascript" src="../../../assets/behavior.js"></script><body><div id="meta"><div class="file-path"><a href="https://github.com/Mortimerp9/LogSplit/blob/master/src/main/resources/application.conf">src/main/resources/application.conf</a></div></div><div id="document"><div class="segment"><div class="code"><div class="wrapper">akka {
+  actor {
+    provider = "<span class="hljs-attribute">akka.cluster.ClusterActorRefProvider"
+  }
+  remote {
+    log-remote-lifecycle-events = off
+    netty.tcp {
+      hostname = "127.0.0.1"
+      port = 0
+    }
+  }
 
-  <span class="err">cluster</span> <span class="p">{</span>
-    <span class="err">roles</span> <span class="err">=</span> <span class="err">[</span><span class="nt">&quot;logsplit&quot;</span><span class="err">]</span>
-    <span class="err">log-info</span> <span class="err">=</span> <span class="err">on</span>
-    <span class="err">seed-nodes</span> <span class="err">=</span> <span class="p">[</span>
-      <span class="s2">&quot;akka.tcp://ClusterSystem@127.0.0.1:2550&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;akka.tcp://ClusterSystem@127.0.0.1:2551&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;akka.tcp://ClusterSystem@127.0.0.1:2552&quot;</span><span class="p">]</span>
+  cluster {
+    roles = ["logsplit"]
+    log-info = on
+    seed-nodes = [
+      "akka.tcp://ClusterSystem@127.0.0.1:2550",
+      "akka.tcp://ClusterSystem@127.0.0.1:2551",
+      "akka.tcp://ClusterSystem@127.0.0.1:2552"]
 
-    <span class="err">auto-down-unreachable-after</span> <span class="err">=</span> <span class="mi">30</span><span class="err">s</span>
-    <span class="err">use-dispatcher</span> <span class="err">=</span> <span class="err">cluster-dispatcher</span>
-    <span class="err">failure-detector.acceptable-heartbeat-pause</span> <span class="err">=</span> <span class="mi">10</span><span class="err">s</span>
-  <span class="p">}</span>
-<span class="err">}</span>
-<span class="err">cluster-dispatcher:</span><span class="p">{</span>
-  <span class="err">fork-join-executor:{</span>
-    <span class="err">parallelism-min:2,</span>
-    <span class="err">parallelism-max:4</span>
-  <span class="p">}</span><span class="err">,</span>
-  <span class="err">executor:</span><span class="s2">&quot;fork-join-executor&quot;</span><span class="err">,</span>
-  <span class="err">type:</span><span class="s2">&quot;Dispatcher&quot;</span>
-<span class="err">}</span></div></div></div></div></body></html>
+    auto-down-unreachable-after = 30s
+    use-dispatcher = cluster-dispatcher
+    failure-detector.acceptable-heartbeat-pause = 10s
+  }
+}
+cluster-dispatcher:{
+  fork-join-executor:{
+    parallelism-min:2,
+    parallelism-max:4
+  },
+  executor:"fork-join-executor",
+  type:"Dispatcher"
+}</span></div></div></div></div></body></html>
